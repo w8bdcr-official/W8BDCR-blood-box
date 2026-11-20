@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.w8bdcr.bloodbox"
+    android:versionCode="6"
+    android:versionName="3.0">
+    <!-- W8BDCR Blood Box v3.0 — donor registry + blood requests are ONLINE
+         and SHARED via Firebase Realtime Database (public /donors and
+         /requests nodes, no secret, no auth). INTERNET is the only
+         permission: the app needs it to fetch/post the shared lists.
+         Passwords stay on the phone and are never sent. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:label="W8BDCR Blood Box"
+        android:icon="@drawable/icon"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

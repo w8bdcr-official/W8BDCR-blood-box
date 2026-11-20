@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>W8BDCR Blood Box</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: sans-serif; background: #fdf2f2; color: #222; }
+  /* ---------- header ---------- */
+  header { background: #d32f2f; color: #fff; padding: 12px 14px; display: flex; align-items: center; position: sticky; top: 0; z-index: 30; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+  header .menu-btn { background: rgba(255,255,255,.18); border: none; color: #fff; font-size: 22px; width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0; }
+  header .brand { flex: 1; text-align: left; }
+  header .brand h1 { font-size: 21px; letter-spacing: .3px; }
+  header .brand p { font-size: 12px; opacity: .92; margin-top: 1px; }
+  header .spacer { width: 42px; flex-shrink: 0; }
+  /* ---------- main / sections ---------- */
+  main { padding: 14px 14px 120px; max-width: 560px; margin: 0 auto; }
+  section { display: none; }
+  section.active { display: block; }
+  .card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 5px rgba(0,0,0,.1); }
+  .card h2 { font-size: 19px; color: #b71c1c; margin-bottom: 10px; }
+  .sec-title { font-size: 24px; font-weight: bold; text-align: center; margin: 8px 0 4px; }
+  .sec-title .red { color: #d32f2f; }
+  .sec-sub { text-align: center; color: #666; font-size: 14px; margin-bottom: 14px; line-height: 1.6; }
+  label { display: block; font-size: 14px; font-weight: bold; margin: 12px 0 5px; }
+  label .req { color: #d32f2f; }
+  input, select, textarea { width: 100%; padding: 12px; font-size: 16px; border: 1.5px solid #ccc; border-radius: 10px; background: #fff; font-family: sans-serif; }
+  input:focus, select:focus, textarea:focus { border-color: #d32f2f; outline: none; }
+  .btn { display: block; width: 100%; padding: 14px; margin-top: 14px; font-size: 17px; font-weight: bold; color: #fff; background: #d32f2f; border: none; border-radius: 12px; }
+  .btn.green { background: #16a34a; }
+  .btn.blue { background: #1565d8; }
+  .btn.ghost { background: #fff; color: #d32f2f; border: 2px solid #d32f2f; }
+  .btn.grey { background: #eee; color: #555; }
+  .hint { font-size: 13px; color: #666; margin-top: 7px; line-height: 1.5; }
+  .note { background: #fff8e1; border-left: 4px solid #f9a825; padding: 11px 12px; border-radius: 10px; font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
+  .note.green { background: #e8f5e9; border-left-color: #16a34a; }
+  .note.red { background: #fdecea; border-left-color: #d32f2f; }
+  .row2 { display: flex; gap: 10px; }
+  .row2 > div { flex: 1; min-width: 0; }
+  .row3 { display: flex; gap: 8px; align-items: flex-end; }
+  .row3 > div { flex: 1; min-width: 0; }
+  .refresh-btn { width: 48px; height: 48px; flex-shrink: 0; border: 1.5px solid #ccc; background: #fff; border-radius: 10px; font-size: 20px; }
+  /* ---------- filter card ---------- */
+  .filter-card { background: #fff; border: 2px solid #d32f2f; border-radius: 18px; padding: 12px; margin-bottom: 14px; box-shadow: 0 1px 5px rgba(0,0,0,.08); }
+  .filter-card select, .filter-card input { border: 1.5px solid #ddd; background: #f7f7f7; }
+  /* ---------- hero ---------- */
+  .hero { background: linear-gradient(135deg, #d32f2f, #8e1111); border-radius: 20px; padding: 26px 20px; color: #fff; position: relative; overflow: hidden; margin-bottom: 14px; box-shadow: 0 3px 10px rgba(211,47,47,.35); }
+  .hero .drop { position: absolute; right: -14px; top: -30px; font-size: 150px; opacity: .14; }
+  .hero h2 { font-size: 24px; line-height: 1.35; }
+  .hero p { font-size: 14px; opacity: .92; margin-top: 8px; line-height: 1.6; }
+  .hero .hero-btn { display: inline-block; margin-top: 14px; padding: 11px 22px; background: #fff; color: #d32f2f; font-weight: bold; font-size: 16px; border: none; border-radius: 10px; }
+  .hero .dots { margin-top: 16px; text-align: center; }
+  .hero .dots span { display: inline-block; width: 8px; height: 8px; border-radius: 8px; background: rgba(255,255,255,.45); margin: 0 3px; }
+  .hero .dots span.on { width: 22px; background: #fff; }
+  /* ---------- quick tiles ---------- */
+  .tiles { display: flex; gap: 10px; margin-bottom: 6px; }
+  .tile { flex: 1; background: #fff; border-radius: 16px; padding: 16px 6px 13px; text-align: center; box-shadow: 0 1px 5px rgba(0,0,0,.1); border: none; font-size: 15px; font-weight: bold; color: #222; }
+  .tile .ic { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+  .tile .ic.red { background: #fdecea; }
+  .tile .ic.green { background: #e8f5e9; }
+  .tile .ic.orange { background: #fff3e0; }
+  .sec-head { display: flex; align-items: center; margin: 18px 2px 10px; }
+  .sec-head .bar { width: 5px; height: 24px; background: #d32f2f; border-radius: 4px; margin-right: 9px; }
+  .sec-head h3 { font-size: 19px; flex: 1; }
+  .sec-head a { color: #d32f2f; font-size: 14px; font-weight: bold; }
+  /* ---------- donor card ---------- */
+  .dcard { background: #fff; border-radius: 18px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,.12); border: 1.5px solid #f3c1c1; }
+  .dcard.demo { border-color: #f0c96a; }
+  .dcard-top { background: #fdecec; position: relative; padding: 18px 0 10px; text-align: center; overflow: hidden; }
+  .dcard-top .giant { position: absolute; left: 6px; top: -18px; font-size: 96px; font-weight: bold; color: rgba(211,47,47,.1); }
+  .dcard-top .gbox { position: relative; width: 84px; height: 84px; margin: 0 auto; background: #fff; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: #d32f2f; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+  .dcard-body { padding: 12px 14px 14px; text-align: center; }
+  .dcard-body .dname { font-size: 19px; font-weight: bold; }
+  .dcard-body .dloc { color: #555; font-size: 14px; margin-top: 5px; }
+  .dinfo { display: flex; background: #eafaf0; border-radius: 12px; margin-top: 12px; padding: 10px 6px; }
+  .dinfo > div { flex: 1; }
+  .dinfo > div + div { border-left: 1px solid #c8e6c9; }
+  .dinfo .lbl { font-size: 12px; color: #777; }
+  .dinfo .val { font-size: 15px; font-weight: bold; color: #1b7a33; margin-top: 2px; }
+  .dbtns { display: flex; gap: 10px; margin-top: 12px; }
+  .dbtns .callbtn { flex: 1; padding: 13px 6px; font-size: 16px; font-weight: bold; color: #fff; background: #16a34a; border: none; border-radius: 10px; }
+  .dbtns .callbtn:disabled { background: #bbb; }
+  .dbtns .profbtn { flex: 1; padding: 13px 6px; font-size: 16px; font-weight: bold; color: #fff; background: #1565d8; border: none; border-radius: 10px; }
+  .badge { display: inline-block; font-size: 12px; font-weight: bold; padding: 2px 9px; border-radius: 20px; margin-left: 6px; vertical-align: middle; }
+  .badge.demo { background: #f9a825; color: #333; }
+  .badge.mine { background: #16a34a; color: #fff; }
+  .badge.urgent { background: #d32f2f; color: #fff; }
+  /* ---------- request card ---------- */
+  .rcard { background: #fff; border-radius: 16px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,.12); }
+  .rcard.demo { border: 1.5px solid #f0c96a; }
+  .rcard .rhosp { display: flex; align-items: center; background: #f7f7f7; padding: 11px 14px; }
+  .rcard .rhosp .hic { width: 44px; height: 44px; border-radius: 12px; background: #16a34a; color: #fff; font-size: 24px; display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0; }
+  .rcard .rhosp .hname { font-size: 16px; font-weight: bold; flex: 1; min-width: 0; }
+  .rcard .rbody { padding: 13px 14px 14px; }
+  .rcard .rpatient { font-size: 19px; font-weight: bold; }
+  .rcard .rneed { color: #d32f2f; font-weight: bold; font-size: 16px; margin-top: 5px; }
+  .rcard .rmeta { color: #b45309; font-size: 14px; margin-top: 6px; }
+  .rcard .rage { color: #777; font-size: 13px; margin-top: 4px; }
+  .rbtns { display: flex; gap: 8px; margin-top: 12px; }
+  .rbtns .offer { flex: 1; padding: 12px 6px; font-size: 15px; font-weight: bold; color: #fff; background: #16a34a; border: none; border-radius: 10px; }
+  .rbtns .offer:disabled { background: #bbb; }
+  .rbtns .sq { width: 48px; padding: 0; font-size: 20px; background: #fff; border: 1.5px solid #ccc; border-radius: 10px; }
+  .pill { display: inline-block; background: #fdecea; color: #b71c1c; border-radius: 20px; padding: 7px 14px; font-size: 14px; font-weight: bold; }
+  .count-pill { display: inline-block; background: #fdecea; color: #b71c1c; border-radius: 20px; padding: 7px 14px; font-size: 14px; font-weight: bold; }
+  /* ---------- bottom nav ---------- */
+  .bottomnav { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 40; background: #fff; border: 2px solid #d32f2f; border-radius: 44px; display: flex; padding: 6px 4px; box-shadow: 0 4px 14px rgba(0,0,0,.2); max-width: 536px; margin: 0 auto; }
+  .bottomnav button { flex: 1; border: none; background: none; font-size: 12px; font-weight: bold; color: #888; padding: 4px 0 2px; }
+  .bottomnav button .ic { display: block; font-size: 22px; margin-bottom: 1px; }
+  .bottomnav button.active { color: #d32f2f; }
+  .bottomnav .homebtn { position: relative; }
+  .bottomnav .homebtn .circle { width: 58px; height: 58px; border-radius: 50%; background: #d32f2f; color: #fff; font-size: 28px; display: flex; align-items: center; justify-content: center; margin: -26px auto 0; border: 3px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,.25); }
+  .bottomnav .homebtn.active { color: #d32f2f; }
+  /* ---------- drawer ---------- */
+  .backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 50; display: none; }
+  .backdrop.on { display: block; }
+  .drawer { position: fixed; top: 0; left: 0; bottom: 0; width: 82%; max-width: 330px; background: #fff; z-index: 51; transform: translateX(-105%); transition: transform .25s; overflow-y: auto; box-shadow: 4px 0 16px rgba(0,0,0,.25); }
+  .drawer.on { transform: translateX(0); }
+  .drawer .dhead { background: #d32f2f; color: #fff; padding: 16px; display: flex; align-items: center; }
+  .drawer .dhead h2 { font-size: 20px; flex: 1; }
+  .drawer .dhead .x { background: rgba(255,255,255,.2); border: none; color: #fff; font-size: 20px; width: 38px; height: 38px; border-radius: 10px; }
+  .drawer .dlogin { padding: 16px; background: #fdf2f2; }
+  .drawer .dlogin p { font-size: 15px; color: #555; margin-bottom: 10px; }
+  .drawer .dlogin .row2 .btn { margin-top: 0; padding: 11px; font-size: 15px; }
+  .drawer .dmenu { padding: 8px 0; }
+  .drawer .dmenu button { display: flex; align-items: center; width: 100%; padding: 14px 18px; border: none; background: none; font-size: 16px; font-weight: bold; color: #222; text-align: left; }
+  .drawer .dmenu button .ic { font-size: 22px; width: 34px; }
+  .drawer .dsec { padding: 12px 18px 4px; font-size: 13px; color: #999; font-weight: bold; }
+  /* ---------- modal ---------- */
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 60; display: none; align-items: flex-end; justify-content: center; }
+  .modal.on { display: flex; }
+  .modal .mbox { background: #fff; width: 100%; max-width: 560px; max-height: 86%; overflow-y: auto; border-radius: 20px 20px 0 0; padding: 18px; }
+  .modal .mbox h2 { font-size: 19px; color: #b71c1c; margin-bottom: 10px; }
+  .modal .mbox p { font-size: 15px; line-height: 1.75; margin-top: 8px; }
+  .modal .mbox .x { float: right; border: none; background: #eee; font-size: 18px; width: 34px; height: 34px; border-radius: 10px; }
+  /* ---------- toggle switch ---------- */
+  .toggle-row { display: flex; align-items: center; background: #fdf2f2; border: 1.5px dashed #e8a0a0; border-radius: 12px; padding: 13px; margin-top: 12px; }
+  .toggle-row .tlabel { flex: 1; font-size: 15px; font-weight: bold; color: #b71c1c; line-height: 1.5; }
+  .toggle-row input { width: 52px; height: 28px; flex-shrink: 0; appearance: none; background: #ccc; border-radius: 20px; position: relative; padding: 0; border: none; }
+  .toggle-row input:checked { background: #d32f2f; }
+  .toggle-row input:after { content: ""; position: absolute; width: 22px; height: 22px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: left .2s; }
+  .toggle-row input:checked:after { left: 27px; }
+  .empty { text-align: center; color: #777; padding: 26px 10px; font-size: 15px; line-height: 1.7; }
+  /* ---------- hospital list ---------- */
+  .hitem { background: #fff; border-radius: 14px; padding: 13px 14px; margin-bottom: 10px; box-shadow: 0 1px 5px rgba(0,0,0,.1); display: flex; align-items: center; }
+  .hitem .hic { width: 44px; height: 44px; border-radius: 12px; background: #16a34a; color: #fff; font-size: 24px; display: flex; align-items: center; justify-content: center; margin-right: 11px; flex-shrink: 0; }
+  .hitem .hname { font-size: 16px; font-weight: bold; line-height: 1.4; }
+  .hitem .hloc { font-size: 13px; color: #666; margin-top: 2px; }
+  footer { text-align: center; font-size: 12px; color: #999; padding: 6px 16px 16px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><h1>🩸 W8BDCR Blood Box</h1><p>রক্ত দিন, জীবন বাঁচান</p></div>
+  <div class="spacer"></div>
+  <button class="menu-btn" onclick="openDrawer()">☰</button>
+</header>
+
+<!-- side drawer -->
+<div class="backdrop" id="backdrop" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="dhead"><h2>🩸 W8BDCR Blood Box</h2><button class="x" onclick="closeDrawer()">✕</button></div>
+  <div class="dlogin" id="drawer-login"></div>
+  <div class="dmenu">
+    <button onclick="goDrawer('home')"><span class="ic">🏠</span>হোম</button>
+    <button onclick="goDrawer('donors')"><span class="ic">👥</span>ডোনার খুঁজুন</button>
+    <button onclick="goDrawer('requests')"><span class="ic">🩸</span>রক্তের অনুরোধ সমূহ</button>
+    <button onclick="goDrawer('hospitals')"><span class="ic">🏥</span>হাসপাতাল তালিকা</button>
+    <button onclick="goDrawerNewRequest()"><span class="ic">➕</span>নতুন অনুরোধ তৈরি করুন</button>
+  </div>
+  <div class="dsec">তথ্য ও অন্যান্য</div>
+  <div class="dmenu">
+    <button onclick="openInfo('about')"><span class="ic">📄</span>আমাদের সম্পর্কে</button>
+    <button onclick="openInfo('terms')"><span class="ic">📄</span>ব্যবহারের শর্তাবলী</button>
+    <button onclick="openInfo('privacy')"><span class="ic">📄</span>গোপনীয়তা নীতি</button>
+    <button onclick="openInfo('health')"><span class="ic">📄</span>স্বাস্থ্য ও চিকিৎসা ডিসক্লেইমার</button>
+    <button onclick="openInfo('delete')"><span class="ic">📄</span>অ্যাকাউন্ট ও ডেটা মুছে ফেলার নির্দেশিকা</button>
+    <button onclick="openInfo('faq')"><span class="ic">📄</span>সাধারণ জিজ্ঞাসা</button>
+  </div>
+  <div style="padding:16px 18px;color:#999;font-size:12px">ভার্সন ৩.০ • W8BDCR</div>
+</aside>
+
+<main>
+
+  <!-- ============ HOME ============ -->
+  <section class="tab" id="tab-home">
+    <div class="hero-banner" id="heroBanner">
+      <div class="drop-bg">🩸</div>
+      <button class="arrow l" onclick="heroMove(-1)">‹</button>
+      <button class="arrow r" onclick="heroMove(1)">›</button>
+      <h2 id="heroTitle">জীবন বাঁচাতে</h2>
+      <p id="heroSub">আপনার এক ব্যাগ রক্ত বাঁচাতে পারে একটি জীবন।</p>
+      <button class="hero-cta" id="heroCta" onclick="heroGo()">আজই রক্ত দিন</button>
+      <div class="dots" id="heroDots"></div>
+    </div>
+    <button class="big-red" onclick="openNewRequest()">＋ নতুন রক্তের অনুরোধ</button>
+    <div class="sec-title">দ্রুত অ্যাকশন</div>
+    <div class="tiles">
+      <button class="tile" onclick="showTab('donors')"><span class="ic red">🔍</span>ডোনার খুঁজুন</button>
+      <button class="tile" onclick="showTab('requests')"><span class="ic green">➕</span>রক্তের অনুরোধ</button>
+      <button class="tile" onclick="openNewRequest()"><span class="ic orange">🩸</span>নতুন অনুরোধ</button>
+    </div>
+    <div class="sync-note note" id="syncNoteHome">অনলাইন তালিকা লোড হচ্ছে…</div>
+    <div class="sec-head"><div class="sec-title" style="margin:0">সাম্প্রতিক রক্তের অনুরোধ</div><button class="refresh-btn" onclick="showTab('requests')">সবগুলো দেখুন →</button></div>
+    <div id="homeRequests"></div>
+  </section>
+
+  <!-- ============ DONORS ============ -->
+  <section class="tab" id="tab-donors" style="display:none">
+    <div class="sec-title">মুহূর্তেই খুঁজে নিন <span class="red">রক্তদাতা</span></div>
+    <div class="filter-card">
+      <select id="fGroup" onchange="onGroupFilter()" style="width:100%"></select>
+      <div class="row3" style="margin-top:10px">
+        <div><select id="fDistrict" onchange="onDistrictFilter()"></select></div>
+        <div><select id="fThana" onchange="onThanaFilter()"></select></div>
+        <button class="refresh-btn" onclick="syncAll()">↻</button>
+      </div>
+      <input id="fThanaCustom" type="text" placeholder="থানার নাম লিখুন" oninput="renderDonors()" style="display:none;margin-top:8px">
+    </div>
+    <div class="sync-note note" id="syncNoteDonors">অনলাইন তালিকা লোড হচ্ছে…</div>
+    <div id="donorList"></div>
+  </section>
+
+  <!-- ============ REQUESTS ============ -->
+  <section class="tab" id="tab-requests" style="display:none">
+    <div class="row2" style="align-items:center;margin-bottom:10px"><span class="pill" style="background:#fdecea;color:#b71c1c">● চলমান অনুরোধ সমূহ</span><span style="flex:1"></span><button class="btn" style="width:auto;margin:0;padding:10px 16px" onclick="openNewRequest()">＋ নতুন অনুরোধ</button></div>
+    <div class="sec-title">যাদের এখন <span class="red">রক্ত</span> প্রয়োজন</div>
+    <p class="sec-sub">এখানে যাদের রক্ত দরকার তাদের অনুরোধগুলো দেখা যায়। গ্রুপ মিললে এগিয়ে আসুন, আর না পারলে অনুরোধটি শেয়ার করুন — একটা শেয়ারও অনেক কাজে আসতে পারে।</p>
+    <div class="filter-card">
+      <select id="rqfGroup" onchange="renderRequests()" style="width:100%"></select>
+      <div class="row3" style="margin-top:10px">
+        <div><select id="rqfDistrict" onchange="onReqDistrictFilter()"></select></div>
+        <div><select id="rqfThana" onchange="renderRequests()"></select></div>
+        <button class="refresh-btn" onclick="syncRequests()">↻</button>
+      </div>
+    </div>
+    <div class="note" id="syncNoteReq">অনলাইন অনুরোধ লোড হচ্ছে…</div>
+    <div class="filter-card" id="reqForm" style="display:none">
+      <div style="font-size:15px;font-weight:700;margin-bottom:8px">নতুন রক্তের অনুরোধ</div>
+      <input id="rqPatient" type="text" placeholder="রোগীর নাম">
+      <div style="display:flex;gap:8px">
+        <select id="rqGroup" style="flex:1"></select>
+        <input id="rqBags" type="number" min="1" max="20" value="1" style="flex:1">
+      </div>
+      <select id="rqHospitalSel" onchange="onHospSel()"></select>
+      <input id="rqHospitalCustom" type="text" placeholder="হাসপাতালের নাম লিখুন" style="display:none;margin-top:8px">
+      <div style="display:flex;gap:8px">
+        <select id="rqDistrict" style="flex:1" onchange="fillHospitals()"></select>
+        <input id="rqThana" type="text" placeholder="থানা" style="flex:1">
+      </div>
+      <div style="display:flex;gap:8px">
+        <input id="rqDate" type="date" style="flex:1">
+        <input id="rqTime" type="text" placeholder="সময় (যেমন: সকাল ১০টা)" style="flex:1">
+      </div>
+      <label class="toggle-row"><span>জরুরি অনুরোধ</span><input id="rqUrgent" type="checkbox"></label>
+      <input id="rqContact" type="tel" placeholder="যোগাযোগের নম্বর (১১ ডিজিট, 01 দিয়ে শুরু)" inputmode="numeric">
+      <button class="big-red" onclick="submitRequest()">অনুরোধ পাঠান</button>
+      <button class="ghost-btn" onclick="closeNewRequest()">বাতিল</button>
+      <div class="err" id="rqErr"></div>
+    </div>
+    <div id="requestList"></div>
+  </section>
+
+  <!-- ============ HOSPITALS ============ -->
+  <section class="tab" id="tab-hospitals" style="display:none">
+    <div class="sec-head"><div class="sec-title" style="margin:0">হাসপাতাল তালিকা</div></div>
+    <div class="note">দেশের বড় ও পরিচিত হাসপাতালের তালিকা — নাম ও জেলা শুধু। এই তালিকা অ্যাপের ভেতরেই আছে, অফলাইনেও দেখা যায়। তালিকায় না থাকা হাসপাতাল অনুরোধের ফর্মে নিজে লিখে দিতে পারবেন।</div>
+    <div class="filter-card">
+      <input id="hSearch" type="text" placeholder="হাসপাতালের নাম লিখে খুঁজুন" oninput="renderHospitals()">
+      <div style="margin-top:10px"><select id="hDistrict" onchange="renderHospitals()"></select></div>
+    </div>
+    <div id="hospCount" style="font-size:14px;color:#666;margin-bottom:10px"></div>
+    <div id="hospitalList"></div>
+  </section>
+
+  <!-- ============ MESSAGES ============ -->
+  <section class="tab" id="tab-messages" style="display:none">
+    <div class="sec-title">বার্তা</div>
+    <div class="note">সরাসরি চ্যাট এই ভার্সনে নেই — ডোনারের সাথে যোগাযোগের জন্য সবুজ কল বোতাম ব্যবহার করুন।</div>
+    <div class="sec-head"><span class="bar"></span><h3>জরুরি অনুরোধ — আপনার গ্রুপের জন্য</h3></div>
+    <div id="msgUrgent"></div>
+    <div class="sec-head"><span class="bar"></span><h3>আমার অনুরোধ</h3></div>
+    <div id="msgMine"></div>
+  </section>
+
+  <!-- ============ PROFILE ============ -->
+  <section class="tab" id="tab-profile" style="display:none">
+    <div class="sec-title">প্রোফাইল</div>
+    <div id="profileOut">
+      <div class="filter-card">
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px">লগইন করুন</div>
+        <input id="lgPhone" type="tel" placeholder="মোবাইল নম্বর (১১ ডিজিট)" inputmode="numeric">
+        <input id="lgPass" type="password" placeholder="পাসওয়ার্ড">
+        <button class="big-red" onclick="login()">লগইন</button>
+        <button class="ghost-btn" onclick="showTab('register')">নতুন অ্যাকাউন্ট খুলুন</button>
+        <div class="err" id="lgErr"></div>
+        <div class="note">পাসওয়ার্ড শুধু এই ফোনেই থাকে — অনলাইনে যায় না।</div>
+      </div>
+    </div>
+    <div id="profileIn" style="display:none">
+      <div class="filter-card" id="myCard"></div>
+      <button class="big-red" onclick="logout()">লগআউট</button>
+      <button class="ghost-btn" style="color:#d32f2f" onclick="deleteMyRegistration()">আমার রেজিস্ট্রেশন মুছে ফেলুন</button>
+    </div>
+  </section>
+
+  <!-- ============ REGISTER ============ -->
+  <section class="tab" id="tab-register" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin:8px 0 4px">
+      <button class="refresh-btn" onclick="showTab('home')" style="width:42px;height:42px;padding:0">←</button>
+      <div class="sec-title" style="margin:0;flex:1">নতুন অ্যাকাউন্ট নিবন্ধন</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="width:64px;height:64px;border-radius:50%;background:#fdecea;color:#d32f2f;font-size:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px">👤</div>
+      <div style="font-size:19px;font-weight:bold">নতুন অ্যাকাউন্ট তৈরি করুন</div>
+      <p style="color:#666;font-size:14px;line-height:1.6;margin-top:6px">আমাদের ডোনার পরিবারে যোগ দিতে নিচের তথ্যগুলো পূরণ করুন।</p>
+    </div>
+    <div class="filter-card">
+      <label>আপনার পুরো নাম <span class="req">*</span></label>
+      <input id="rgName" type="text" placeholder="যেমন: সাকিব আল হাসান">
+      <label>ইমেইল ঠিকানা <span class="req">*</span></label>
+      <input id="rgEmail" type="email" placeholder="example@mail.com">
+      <label>ফোন নম্বর <span class="req">*</span></label>
+      <input id="rgPhone" type="tel" placeholder="০১৭XXXXXXXX" inputmode="numeric">
+      <label class="toggle-row"><span>আমি রক্তদাতা হতে চাই</span><input id="rgDonor" type="checkbox" checked onchange="toggleDonorFields()"></label>
+      <div id="rgDonorFields">
+        <select id="rgGroup"></select>
+        <select id="rgDistrict"></select>
+        <input id="rgThana" type="text" placeholder="থানা (ঐচ্ছিক)">
+        <label style="font-size:13px;color:#555">সর্বশেষ রক্তদান (যদি থাকে)</label>
+        <input id="rgLast" type="date">
+      </div>
+      <label>পাসওয়ার্ড <span class="req">*</span></label>
+      <div class="pw-wrap"><input id="rgPass" type="password" placeholder="কমপক্ষে ৮ অক্ষরের পাসওয়ার্ড"><button type="button" class="eye-btn" onclick="togglePw('rgPass',this)">👁</button></div>
+      <label>পাসওয়ার্ড নিশ্চিত করুন <span class="req">*</span></label>
+      <div class="pw-wrap"><input id="rgPass2" type="password" placeholder="পুনরায় পাসওয়ার্ড লিখুন"><button type="button" class="eye-btn" onclick="togglePw('rgPass2',this)">👁</button></div>
+      <button class="big-red" onclick="submitRegistration()">রেজিস্ট্রেশন সম্পন্ন করুন →</button>
+      <div class="err" id="rgErr"></div>
+      <p style="text-align:center;font-size:14px;color:#666;margin-top:10px">ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="javascript:void(0)" onclick="showTab('profile')" style="color:#d32f2f;font-weight:bold">লগইন করুন</a></p>
+    </div>
+  </section>
+</main>
+
+<!-- ============ MODAL ============ -->
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="mbox" id="modalCard"></div>
+</div>
+
+<!-- ============ BOTTOM NAV ============ -->
+<nav class="bottomnav">
+  <button data-tab="donors" onclick="showTab('donors')"><span class="ic">🩸</span>সকল ডোনার</button>
+  <button data-tab="requests" onclick="showTab('requests')"><span class="ic">📋</span>অনুরোধ</button>
+  <button class="homebtn" data-tab="home" onclick="showTab('home')"><span class="circle">🏠</span>হোম</button>
+  <button data-tab="messages" onclick="showTab('messages')"><span class="ic">💬</span>বার্তা</button>
+  <button data-tab="profile" onclick="showTab('profile')"><span class="ic">👤</span>প্রোফাইল</button>
+</nav>
+
+<script>
+/* ================= W8BDCR Blood Box v3.0 ================= */
+/* অনলাইন ডোনার তালিকা: Firebase Realtime Database (Google-এর সার্ভার —
+   এই VM বন্ধ হলেও তালিকা থাকে)। অ্যাপে কোনো সিক্রেট বা পাসওয়ার্ড যায় না;
+   শুধু ডোনারের পাবলিক তথ্য (নাম, নম্বর, গ্রুপ, জেলা) অনলাইনে যায়। */
+var FB_BASE = "https://w8bdcr-gate-default-rtdb.firebaseio.com";
+
+var GROUPS = ["A+","A-","B+","B-","AB+","AB-","O+","O-"];
+var DISTRICTS = ["বাগেরহাট","বান্দরবান","বরগুনা","বরিশাল","ভোলা","বগুড়া","ব্রাহ্মণবাড়িয়া","চাঁদপুর","চাঁপাইনবাবগঞ্জ","চট্টগ্রাম","চুয়াডাঙ্গা","কুমিল্লা","কক্সবাজার","ঢাকা","দিনাজপুর","ফরিদপুর","ফেনী","গাইবান্ধা","গাজীপুর","গোপালগঞ্জ","হবিগঞ্জ","জামালপুর","যশোর","ঝালকাঠি","ঝিনাইদহ","জয়পুরহাট","খাগড়াছড়ি","খুলনা","কিশোরগঞ্জ","কুড়িগ্রাম","কুষ্টিয়া","লক্ষ্মীপুর","লালমনিরহাট","মাদারীপুর","মাগুরা","মানিকগঞ্জ","মেহেরপুর","মৌলভীবাজার","মুন্সিগঞ্জ","ময়মনসিংহ","নওগাঁ","নড়াইল","নারায়ণগঞ্জ","নরসিংদী","নাটোর","নেত্রকোণা","নীলফামারী","নোয়াখালী","পাবনা","পঞ্চগড়","পটুয়াখালী","পিরোজপুর","রাজবাড়ী","রাজশাহী","রাঙ্গামাটি","রংপুর","সাতক্ষীরা","শরীয়তপুর","শেরপুর","সিরাজগঞ্জ","সুনামগঞ্জ","সিলেট","টাঙ্গাইল","ঠাকুরগাঁও"];
+
+/* থানা তালিকা (জেলা অনুযায়ী) — শুধু আসল থানা/উপজেলার নাম। যে জেলার
+   পুরো তালিকা যাচাই করা যায়নি, সেখানে পরিচিত কয়েকটি + "সদর" দেওয়া
+   আছে; তালিকায় না থাকলে "অন্যান্য" বেছে নিজে লিখতে পারবেন। */
+var THANAS = {
+"বাগেরহাট":["সদর","মোংলা","মোড়েলগঞ্জ","চিতলমারী","কচুয়া","ফকিরহাট","মোল্লাহাট","রামপাল","শরণখোলা"],
+"বান্দরবান":["সদর","রুমা","থানচি","লামা","আলীকদম","নাইক্ষ্যংছড়ি","রোয়াংছড়ি"],
+"বরগুনা":["সদর","আমতলী","পাথরঘাটা","বেতাগী","বামনা","তালতলী"],
+"বরিশাল":["সদর","কোতোয়ালি","বাকেরগঞ্জ","বানারীপাড়া","মুলাদী","মেহেন্দিগঞ্জ","বাবুগঞ্জ","গৌরনদী","আগৈলঝাড়া","হিজলা","উজিরপুর"],
+"ভোলা":["সদর","বোরহানউদ্দিন","চরফ্যাশন","লালমোহন","তজুমদ্দিন","দৌলতখান","মনপুরা"],
+"বগুড়া":["সদর","শেরপুর","শাজাহানপুর","ধুনট","গাবতলী","সারিয়াকান্দি","সোনাতলা","নন্দীগ্রাম","কাহালু","আদমদীঘি","দুপচাঁচিয়া","শিবগঞ্জ"],
+"ব্রাহ্মণবাড়িয়া":["সদর","নবীনগর","সরাইল","আশুগঞ্জ","আখাউড়া","কসবা","নাসিরনগর","বাঞ্ছারামপুর","বিজয়নগর"],
+"চাঁদপুর":["সদর","হাজীগঞ্জ","মতলব","কচুয়া","শাহরাস্তি","ফরিদগঞ্জ","হাইমচর"],
+"চাঁপাইনবাবগঞ্জ":["সদর","শিবগঞ্জ","গোমস্তাপুর","নাচোল","ভোলাহাট"],
+"চট্টগ্রাম":["কোতোয়ালি","পাঁচলাইশ","আগ্রাবাদ","হালিশহর","পাহাড়তলী","চান্দগাঁও","বায়েজিদ","ডবলমুরিং","সদরঘাট","বন্দর","কর্ণফুলী","পটিয়া","সীতাকুণ্ড","মিরসরাই","রাউজান","হাটহাজারী","আনোয়ারা","বোয়ালখালী","সন্দ্বীপ","সাতকানিয়া","লোহাগাড়া","ফটিকছড়ি"],
+"চুয়াডাঙ্গা":["সদর","আলমডাঙ্গা","দামুড়হুদা","জীবননগর"],
+"কুমিল্লা":["সদর","কোতোয়ালি","চৌদ্দগ্রাম","লাকসাম","চান্দিনা","দাউদকান্দি","বুড়িচং","ব্রাহ্মণপাড়া","দেবিদ্বার","মুরাদনগর","তিতাস","হোমনা","মেঘনা","বরুড়া","নাঙ্গলকোট","মনোহরগঞ্জ"],
+"কক্সবাজার":["সদর","চকরিয়া","টেকনাফ","উখিয়া","মহেশখালী","রামু","পেকুয়া","কুতুবদিয়া"],
+"ঢাকা":["আদাবর","বাড্ডা","বংশাল","ক্যান্টনমেন্ট","চকবাজার","দারুস সালাম","ডেমরা","ধানমন্ডি","গেন্ডারিয়া","গুলশান","হাজারীবাগ","যাত্রাবাড়ী","কদমতলী","কাফরুল","কলাবাগান","কামরাঙ্গীরচর","খিলগাঁও","খিলক্ষেত","কোতোয়ালি","লালবাগ","মিরপুর","মোহাম্মদপুর","মতিঝিল","নিউ মার্কেট","পল্লবী","পল্টন","রমনা","রামপুরা","সবুজবাগ","শাহ আলী","শাহবাগ","শেরেবাংলা নগর","শ্যামপুর","সূত্রাপুর","তেজগাঁও","তুরাগ","উত্তরা","ভাটারা","ওয়ারী","সাভার","কেরানীগঞ্জ","দোহার","নবাবগঞ্জ","ধামরাই","আশুলিয়া"],
+"দিনাজপুর":["সদর","পার্বতীপুর","বিরামপুর","ফুলবাড়ী","বিরল","চিরিরবন্দর","খানসামা","বোচাগঞ্জ","কাহারোল","বীরগঞ্জ","ঘোড়াঘাট","হাকিমপুর","নবাবগঞ্জ"],
+"ফরিদপুর":["সদর","কোতোয়ালি","ভাঙ্গা","বোয়ালমারী","মধুখালী","আলফাডাঙ্গা","নগরকান্দা","সালথা","সদরপুর","চরভদ্রাসন"],
+"ফেনী":["সদর","ছাগলনাইয়া","দাগনভূঞা","সোনাগাজী","পরশুরাম","ফুলগাজী"],
+"গাইবান্ধা":["সদর","গোবিন্দগঞ্জ","সুন্দরগঞ্জ","সাদুল্লাপুর","পলাশবাড়ী","ফুলছড়ি","সাঘাটা"],
+"গাজীপুর":["সদর","টঙ্গী","কালিয়াকৈর","শ্রীপুর","কাপাসিয়া","কালীগঞ্জ"],
+"গোপালগঞ্জ":["সদর","টুঙ্গিপাড়া","কোটালীপাড়া","মুকসুদপুর","কাশিয়ানী"],
+"হবিগঞ্জ":["সদর","বাহুবল","চুনারুঘাট","মাধবপুর","নবীগঞ্জ","বানিয়াচং","আজমিরীগঞ্জ","লাখাই","শায়েস্তাগঞ্জ"],
+"জামালপুর":["সদর","মেলান্দহ","ইসলামপুর","সরিষাবাড়ী","দেওয়ানগঞ্জ","মাদারগঞ্জ","বকশীগঞ্জ"],
+"যশোর":["সদর","কোতোয়ালি","ঝিকরগাছা","কেশবপুর","মণিরামপুর","অভয়নগর","চৌগাছা","বাঘারপাড়া","শার্শা"],
+"ঝালকাঠি":["সদর","নলছিটি","রাজাপুর","কাঁঠালিয়া"],
+"ঝিনাইদহ":["সদর","কালীগঞ্জ","কোটচাঁদপুর","শৈলকূপা","মহেশপুর","হরিণাকুণ্ডু"],
+"জয়পুরহাট":["সদর","পাঁচবিবি","আক্কেলপুর","কালাই","ক্ষেতলাল"],
+"খাগড়াছড়ি":["সদর","মাটিরাঙ্গা","দীঘিনালা","পানছড়ি","মহালছড়ি","রামগড়","গুইমারা","লক্ষ্মীছড়ি","মানিকছড়ি"],
+"খুলনা":["সদর","সোনাডাঙ্গা","খালিশপুর","দৌলতপুর","রূপসা","বটিয়াঘাটা","ডুমুরিয়া","পাইকগাছা","তেরখাদা","দিঘলিয়া","ফুলতলা","কয়রা","দাকোপ"],
+"কিশোরগঞ্জ":["সদর","ভৈরব","কুলিয়ারচর","পাকুন্দিয়া","করিমগঞ্জ","বাজিতপুর","কটিয়াদী","তাড়াইল","ইটনা","মিঠামইন","অষ্টগ্রাম","হোসেনপুর","নিকলী"],
+"কুড়িগ্রাম":["সদর","নাগেশ্বরী","ভূরুঙ্গামারী","উলিপুর","রাজারহাট","চিলমারী","রৌমারী","রাজীবপুর","চর রাজিবপুর"],
+"কুষ্টিয়া":["সদর","ভেড়ামারা","মিরপুর","কুমারখালী","খোকসা","দৌলতপুর"],
+"লক্ষ্মীপুর":["সদর","রায়পুর","রামগঞ্জ","রামগতি","কমলনগর"],
+"লালমনিরহাট":["সদর","পাটগ্রাম","হাতীবান্ধা","কালীগঞ্জ","আদিতমারী"],
+"মাদারীপুর":["সদর","শিবচর","রাজৈর","কালকিনি","ডাসার"],
+"মাগুরা":["সদর","শ্রীপুর","শালিখা","মহম্মদপুর"],
+"মানিকগঞ্জ":["সদর","সিংগাইর","হরিরামপুর","ঘিওর","দৌলতপুর","সাটুরিয়া","শিবালয়"],
+"মেহেরপুর":["সদর","গাংনী","মুজিবনগর"],
+"মৌলভীবাজার":["সদর","শ্রীমঙ্গল","কমলগঞ্জ","কুলাউড়া","রাজনগর","বড়লেখা","জুড়ী"],
+"মুন্সিগঞ্জ":["সদর","টঙ্গীবাড়ী","শ্রীনগর","সিরাজদিখান","লৌহজং","গজারিয়া"],
+"ময়মনসিংহ":["সদর","কোতোয়ালি","ত্রিশাল","ভালুকা","ফুলবাড়িয়া","গফরগাঁও","ঈশ্বরগঞ্জ","মুক্তাগাছা","নান্দাইল","ফুলপুর","হালুয়াঘাট","ধোবাউড়া","তারাকান্দা"],
+"নওগাঁ":["সদর","মহাদেবপুর","মান্দা","পত্নীতলা","বদলগাছী","নিয়ামতপুর","সাপাহার","পোরশা","ধামইরহাট","আত্রাই","রাণীনগর"],
+"নড়াইল":["সদর","লোহাগড়া","কালিয়া"],
+"নারায়ণগঞ্জ":["সদর","ফতুল্লা","সিদ্ধিরগঞ্জ","বন্দর","রূপগঞ্জ","আড়াইহাজার","সোনারগাঁ"],
+"নরসিংদী":["সদর","পলাশ","শিবপুর","মনোহরদী","বেলাবো","রায়পুরা"],
+"নাটোর":["সদর","সিংড়া","বড়াইগ্রাম","গুরুদাসপুর","লালপুর","বাগাতিপাড়া","নলডাঙ্গা"],
+"নেত্রকোণা":["সদর","মোহনগঞ্জ","কেন্দুয়া","দুর্গাপুর","কলমাকান্দা","আটপাড়া","বারহাট্টা","পূর্বধলা","মদন","খালিয়াজুরী"],
+"নীলফামারী":["সদর","সৈয়দপুর","ডোমার","জলঢাকা","কিশোরগঞ্জ","ডিমলা"],
+"নোয়াখালী":["সদর","মাইজদী","বেগমগঞ্জ","সেনবাগ","হাতিয়া","কোম্পানীগঞ্জ","সুবর্ণচর","সোনাইমুড়ী","চাটখিল","কবিরহাট"],
+"পাবনা":["সদর","ঈশ্বরদী","ভাঙ্গুড়া","চাটমোহর","সুজানগর","বেড়া","সাঁথিয়া","আটঘরিয়া","ফরিদপুর"],
+"পঞ্চগড়":["সদর","বোদা","দেবীগঞ্জ","তেঁতুলিয়া","আটোয়ারী"],
+"পটুয়াখালী":["সদর","কলাপাড়া","গলাচিপা","বাউফল","মির্জাগঞ্জ","দুমকি","দশমিনা","রাঙ্গাবালী"],
+"পিরোজপুর":["সদর","মঠবাড়িয়া","ভান্ডারিয়া","নেছারাবাদ","নাজিরপুর","কাউখালী","ইন্দুরকানী"],
+"রাজবাড়ী":["সদর","গোয়ালন্দ","পাংশা","বালিয়াকান্দি","কালুখালী"],
+"রাজশাহী":["সদর","বোয়ালিয়া","রাজপাড়া","মতিহার","শাহ মখদুম","কাশিয়াডাঙ্গা","পবা","চারঘাট","বাগমারা","দুর্গাপুর","পুঠিয়া","বাঘা","তানোর","গোদাগাড়ী","মোহনপুর"],
+"রাঙ্গামাটি":["সদর","কাপ্তাই","বাঘাইছড়ি","লংগদু","বরকল","নানিয়ারচর","জুরাছড়ি","বিলাইছড়ি","রাজস্থলী","কাউখালী"],
+"রংপুর":["সদর","কোতোয়ালি","পীরগঞ্জ","বদরগঞ্জ","মিঠাপুকুর","গঙ্গাচড়া","তারাগঞ্জ","পীরগাছা","কাউনিয়া"],
+"সাতক্ষীরা":["সদর","কলারোয়া","তালা","দেবহাটা","আশাশুনি","শ্যামনগর","কালিগঞ্জ"],
+"শরীয়তপুর":["সদর","নড়িয়া","জাজিরা","গোসাইরহাট","ভেদরগঞ্জ","ডামুড্যা"],
+"শেরপুর":["সদর","নালিতাবাড়ী","শ্রীবরদী","নকলা","ঝিনাইগাতী"],
+"সিরাজগঞ্জ":["সদর","উল্লাপাড়া","শাহজাদপুর","বেলকুচি","কাজিপুর","রায়গঞ্জ","তাড়াশ","চৌহালী","কামারখন্দ"],
+"সুনামগঞ্জ":["সদর","ছাতক","জগন্নাথপুর","দিরাই","জামালগঞ্জ","তাহিরপুর","ধর্মপাশা","দোয়ারাবাজার","বিশ্বম্ভরপুর","শাল্লা","দক্ষিণ সুনামগঞ্জ"],
+"সিলেট":["সদর","কোতোয়ালি","দক্ষিণ সুরমা","জালালাবাদ","এয়ারপোর্ট","শাহপরান","গোলাপগঞ্জ","বিয়ানীবাজার","জকিগঞ্জ","কানাইঘাট","বিশ্বনাথ","বালাগঞ্জ","ফেঞ্চুগঞ্জ","কোম্পানীগঞ্জ","জৈন্তাপুর","গোয়াইনঘাট"],
+"টাঙ্গাইল":["সদর","মির্জাপুর","ঘাটাইল","মধুপুর","ভূঞাপুর","কালিহাতী","নাগরপুর","সখীপুর","বাসাইল","দেলদুয়ার","ধনবাড়ী","গোপালপুর"],
+"ঠাকুরগাঁও":["সদর","পীরগঞ্জ","রাণীশংকৈল","বালিয়াডাঙ্গী","হরিপুর"]
+};
+
+/* হাসপাতাল তালিকা — ৬৪ জেলার সব জেলায় অন্তত একটি করে হাসপাতাল আছে।
+   প্রতিটি এন্ট্রি: নাম + জেলা + এলাকা + ধরন (সরকারি / মেডিকেল কলেজ /
+   বেসরকারি)। ফোন নম্বর, ঠিকানা বা ওয়েবসাইট দেওয়া নেই, কারণ সেগুলো
+   যাচাই করা হয়নি। শুধু DGHS ফ্যাসিলিটি রেজিস্ট্রি, DGME ও অন্যান্য
+   প্রকাশ্য তালিকায় নিশ্চিতভাবে পাওয়া হাসপাতালই আছে — ছোট ক্লিনিক
+   বা উপজেলা স্বাস্থ্য কমপ্লেক্স এখানে নেই। */
+var HOSPITALS = [
+  {name:"ঢাকা মেডিকেল কলেজ হাসপাতাল", district:"ঢাকা", area:"শাহবাগ", type:"মেডিকেল কলেজ"},
+  {name:"বঙ্গবন্ধু শেখ মুজিব মেডিকেল বিশ্ববিদ্যালয় (পিজি হাসপাতাল)", district:"ঢাকা", area:"শাহবাগ", type:"সরকারি"},
+  {name:"স্কয়ার হাসপাতাল", district:"ঢাকা", area:"পান্থপথ", type:"বেসরকারি"},
+  {name:"এভারকেয়ার হাসপাতাল ঢাকা", district:"ঢাকা", area:"বসুন্ধরা", type:"বেসরকারি"},
+  {name:"স্যার সলিমুল্লাহ মেডিকেল কলেজ হাসপাতাল (মিটফোর্ড)", district:"ঢাকা", area:"মিটফোর্ড", type:"মেডিকেল কলেজ"},
+  {name:"শহীদ সোহরাওয়ার্দী মেডিকেল কলেজ হাসপাতাল", district:"ঢাকা", area:"শেরেবাংলা নগর", type:"মেডিকেল কলেজ"},
+  {name:"ঢাকা শিশু হাসপাতাল", district:"ঢাকা", area:"শ্যামলী", type:"সরকারি"},
+  {name:"জাতীয় হৃদরোগ ইনস্টিটিউট", district:"ঢাকা", area:"শেরেবাংলা নগর", type:"সরকারি"},
+  {name:"বারডেম হাসপাতাল", district:"ঢাকা", area:"শাহবাগ", type:"বেসরকারি"},
+  {name:"ইউনাইটেড হাসপাতাল", district:"ঢাকা", area:"গুলশান", type:"বেসরকারি"},
+  {name:"ইবনে সিনা হাসপাতাল", district:"ঢাকা", area:"ধানমন্ডি", type:"বেসরকারি"},
+  {name:"মুগদা মেডিকেল কলেজ হাসপাতাল", district:"ঢাকা", area:"মুগদা", type:"মেডিকেল কলেজ"},
+  {name:"কুর্মিটোলা জেনারেল হাসপাতাল", district:"ঢাকা", area:"কুর্মিটোলা", type:"সরকারি"},
+  {name:"হলি ফ্যামিলি রেড ক্রিসেন্ট হাসপাতাল", district:"ঢাকা", area:"মগবাজার", type:"বেসরকারি"},
+  {name:"ল্যাবএইড হাসপাতাল", district:"ঢাকা", area:"ধানমন্ডি", type:"বেসরকারি"},
+  {name:"আনোয়ার খান মডার্ন হাসপাতাল", district:"ঢাকা", area:"ধানমন্ডি", type:"বেসরকারি"},
+  {name:"চট্টগ্রাম মেডিকেল কলেজ হাসপাতাল", district:"চট্টগ্রাম", area:"পাঁচলাইশ", type:"মেডিকেল কলেজ"},
+  {name:"চট্টগ্রাম জেনারেল হাসপাতাল", district:"চট্টগ্রাম", area:"আন্দরকিল্লা", type:"সরকারি"},
+  {name:"চট্টগ্রাম মা ও শিশু হাসপাতাল", district:"চট্টগ্রাম", area:"আগ্রাবাদ", type:"বেসরকারি"},
+  {name:"ইম্পেরিয়াল হাসপাতাল", district:"চট্টগ্রাম", area:"পাহাড়তলী", type:"বেসরকারি"},
+  {name:"এভারকেয়ার হাসপাতাল চট্টগ্রাম", district:"চট্টগ্রাম", area:"হালিশহর", type:"বেসরকারি"},
+  {name:"খুলনা মেডিকেল কলেজ হাসপাতাল", district:"খুলনা", area:"সোনাডাঙ্গা", type:"মেডিকেল কলেজ"},
+  {name:"শেখ আবু নাসের বিশেষায়িত হাসপাতাল", district:"খুলনা", area:"খুলনা সদর", type:"সরকারি"},
+  {name:"রাজশাহী মেডিকেল কলেজ হাসপাতাল", district:"রাজশাহী", area:"লক্ষ্মীপুর", type:"মেডিকেল কলেজ"},
+  {name:"সিলেট এম.এ.জি. ওসমানী মেডিকেল কলেজ হাসপাতাল", district:"সিলেট", area:"কাজলশাহ", type:"মেডিকেল কলেজ"},
+  {name:"সিলেট উইমেন্স মেডিকেল কলেজ হাসপাতাল", district:"সিলেট", area:"মিরবক্সটুলা", type:"বেসরকারি"},
+  {name:"শের-ই-বাংলা মেডিকেল কলেজ হাসপাতাল", district:"বরিশাল", area:"বরিশাল সদর", type:"মেডিকেল কলেজ"},
+  {name:"রংপুর মেডিকেল কলেজ হাসপাতাল", district:"রংপুর", area:"ধাপ", type:"মেডিকেল কলেজ"},
+  {name:"ময়মনসিংহ মেডিকেল কলেজ হাসপাতাল", district:"ময়মনসিংহ", area:"চরপাড়া", type:"মেডিকেল কলেজ"},
+  {name:"কুমিল্লা মেডিকেল কলেজ হাসপাতাল", district:"কুমিল্লা", area:"কুচাইতলী", type:"মেডিকেল কলেজ"},
+  {name:"শহীদ জিয়াউর রহমান মেডিকেল কলেজ হাসপাতাল", district:"বগুড়া", area:"সিলিমপুর", type:"মেডিকেল কলেজ"},
+  {name:"ফরিদপুর মেডিকেল কলেজ হাসপাতাল", district:"ফরিদপুর", area:"ঝিলটুলী", type:"মেডিকেল কলেজ"},
+  {name:"দিনাজপুর মেডিকেল কলেজ হাসপাতাল", district:"দিনাজপুর", area:"দিনাজপুর সদর", type:"মেডিকেল কলেজ"},
+  {name:"কক্সবাজার সদর হাসপাতাল", district:"কক্সবাজার", area:"কক্সবাজার সদর", type:"সরকারি"},
+  {name:"যশোর জেনারেল হাসপাতাল", district:"যশোর", area:"যশোর সদর", type:"সরকারি"},
+  {name:"নোয়াখালী সদর হাসপাতাল", district:"নোয়াখালী", area:"মাইজদী", type:"সরকারি"},
+  {name:"চাঁদপুর সদর হাসপাতাল", district:"চাঁদপুর", area:"চাঁদপুর সদর", type:"সরকারি"},
+  {name:"ফেনী সদর হাসপাতাল", district:"ফেনী", area:"ফেনী সদর", type:"সরকারি"},
+  {name:"ব্রাহ্মণবাড়িয়া সদর হাসপাতাল", district:"ব্রাহ্মণবাড়িয়া", area:"ব্রাহ্মণবাড়িয়া সদর", type:"সরকারি"},
+  {name:"শহীদ তাজউদ্দীন আহমদ মেডিকেল কলেজ হাসপাতাল", district:"গাজীপুর", area:"জয়দেবপুর", type:"মেডিকেল কলেজ"},
+  {name:"নারায়ণগঞ্জ জেনারেল হাসপাতাল", district:"নারায়ণগঞ্জ", area:"ভিক্টোরিয়া", type:"সরকারি"},
+  {name:"টাঙ্গাইল সদর হাসপাতাল", district:"টাঙ্গাইল", area:"টাঙ্গাইল সদর", type:"সরকারি"},
+  {name:"শেখ সায়েরা খাতুন মেডিকেল কলেজ হাসপাতাল", district:"গোপালগঞ্জ", area:"গোপালগঞ্জ সদর", type:"মেডিকেল কলেজ"},
+  {name:"শহীদ সৈয়দ নজরুল ইসলাম মেডিকেল কলেজ হাসপাতাল", district:"কিশোরগঞ্জ", area:"কিশোরগঞ্জ সদর", type:"মেডিকেল কলেজ"},
+  {name:"কর্নেল মালেক মেডিকেল কলেজ হাসপাতাল", district:"মানিকগঞ্জ", area:"মানিকগঞ্জ সদর", type:"মেডিকেল কলেজ"},
+  {name:"শহীদ এম. মনসুর আলী মেডিকেল কলেজ হাসপাতাল", district:"সিরাজগঞ্জ", area:"সিরাজগঞ্জ সদর", type:"মেডিকেল কলেজ"},
+  {name:"নেত্রকোণা সদর হাসপাতাল", district:"নেত্রকোণা", area:"নেত্রকোণা সদর", type:"সরকারি"},
+  {name:"জামালপুর সদর হাসপাতাল", district:"জামালপুর", area:"জামালপুর সদর", type:"সরকারি"},
+  {name:"পাবনা সদর হাসপাতাল", district:"পাবনা", area:"পাবনা সদর", type:"সরকারি"},
+  {name:"বাগেরহাট জেলা হাসপাতাল", district:"বাগেরহাট", area:"বাগেরহাট সদর", type:"সরকারি"},
+  {name:"বান্দরবান জেলা হাসপাতাল", district:"বান্দরবান", area:"বান্দরবান সদর", type:"সরকারি"},
+  {name:"বরগুনা জেনারেল হাসপাতাল", district:"বরগুনা", area:"বরগুনা সদর", type:"সরকারি"},
+  {name:"ভোলা সদর হাসপাতাল", district:"ভোলা", area:"ভোলা সদর", type:"সরকারি"},
+  {name:"চুয়াডাঙ্গা সদর হাসপাতাল", district:"চুয়াডাঙ্গা", area:"চুয়াডাঙ্গা সদর", type:"সরকারি"},
+  {name:"গাইবান্ধা জেনারেল হাসপাতাল", district:"গাইবান্ধা", area:"গাইবান্ধা সদর", type:"সরকারি"},
+  {name:"হবিগঞ্জ সদর হাসপাতাল", district:"হবিগঞ্জ", area:"হবিগঞ্জ সদর", type:"সরকারি"},
+  {name:"হবিগঞ্জ মেডিকেল কলেজ হাসপাতাল", district:"হবিগঞ্জ", area:"হবিগঞ্জ সদর", type:"মেডিকেল কলেজ"},
+  {name:"ঝালকাঠি জেলা হাসপাতাল", district:"ঝালকাঠি", area:"ঝালকাঠি সদর", type:"সরকারি"},
+  {name:"ঝিনাইদহ জেনারেল হাসপাতাল", district:"ঝিনাইদহ", area:"ঝিনাইদহ সদর", type:"সরকারি"},
+  {name:"জয়পুরহাট জেলা হাসপাতাল", district:"জয়পুরহাট", area:"জয়পুরহাট সদর", type:"সরকারি"},
+  {name:"খাগড়াছড়ি জেলা হাসপাতাল", district:"খাগড়াছড়ি", area:"খাগড়াছড়ি সদর", type:"সরকারি"},
+  {name:"কুড়িগ্রাম জেলা হাসপাতাল", district:"কুড়িগ্রাম", area:"কুড়িগ্রাম সদর", type:"সরকারি"},
+  {name:"কুষ্টিয়া জেনারেল হাসপাতাল", district:"কুষ্টিয়া", area:"কুষ্টিয়া সদর", type:"সরকারি"},
+  {name:"কুষ্টিয়া মেডিকেল কলেজ হাসপাতাল", district:"কুষ্টিয়া", area:"কুষ্টিয়া সদর", type:"মেডিকেল কলেজ"},
+  {name:"লক্ষ্মীপুর জেলা হাসপাতাল", district:"লক্ষ্মীপুর", area:"লক্ষ্মীপুর সদর", type:"সরকারি"},
+  {name:"লালমনিরহাট সদর হাসপাতাল", district:"লালমনিরহাট", area:"লালমনিরহাট সদর", type:"সরকারি"},
+  {name:"মাদারীপুর জেলা হাসপাতাল", district:"মাদারীপুর", area:"মাদারীপুর সদর", type:"সরকারি"},
+  {name:"মাগুরা সদর হাসপাতাল", district:"মাগুরা", area:"মাগুরা সদর", type:"সরকারি"},
+  {name:"মাগুরা মেডিকেল কলেজ হাসপাতাল", district:"মাগুরা", area:"মাগুরা সদর", type:"মেডিকেল কলেজ"},
+  {name:"মেহেরপুর জেনারেল হাসপাতাল", district:"মেহেরপুর", area:"মেহেরপুর সদর", type:"সরকারি"},
+  {name:"মৌলভীবাজার সদর হাসপাতাল", district:"মৌলভীবাজার", area:"মৌলভীবাজার সদর", type:"সরকারি"},
+  {name:"মুন্সিগঞ্জ জেলা হাসপাতাল", district:"মুন্সিগঞ্জ", area:"মুন্সিগঞ্জ সদর", type:"সরকারি"},
+  {name:"নওগাঁ জেলা হাসপাতাল", district:"নওগাঁ", area:"নওগাঁ সদর", type:"সরকারি"},
+  {name:"নওগাঁ মেডিকেল কলেজ হাসপাতাল", district:"নওগাঁ", area:"নওগাঁ সদর", type:"মেডিকেল কলেজ"},
+  {name:"নড়াইল জেলা হাসপাতাল", district:"নড়াইল", area:"নড়াইল সদর", type:"সরকারি"},
+  {name:"নরসিংদী জেলা হাসপাতাল", district:"নরসিংদী", area:"নরসিংদী সদর", type:"সরকারি"},
+  {name:"নাটোর সদর হাসপাতাল", district:"নাটোর", area:"নাটোর সদর", type:"সরকারি"},
+  {name:"নীলফামারী জেলা হাসপাতাল", district:"নীলফামারী", area:"নীলফামারী সদর", type:"সরকারি"},
+  {name:"নীলফামারী মেডিকেল কলেজ হাসপাতাল", district:"নীলফামারী", area:"নীলফামারী সদর", type:"মেডিকেল কলেজ"},
+  {name:"পঞ্চগড় জেলা হাসপাতাল", district:"পঞ্চগড়", area:"পঞ্চগড় সদর", type:"সরকারি"},
+  {name:"পটুয়াখালী সদর হাসপাতাল", district:"পটুয়াখালী", area:"পটুয়াখালী সদর", type:"সরকারি"},
+  {name:"পটুয়াখালী মেডিকেল কলেজ হাসপাতাল", district:"পটুয়াখালী", area:"পটুয়াখালী সদর", type:"মেডিকেল কলেজ"},
+  {name:"পিরোজপুর জেলা হাসপাতাল", district:"পিরোজপুর", area:"পিরোজপুর সদর", type:"সরকারি"},
+  {name:"রাজবাড়ী জেনারেল হাসপাতাল", district:"রাজবাড়ী", area:"রাজবাড়ী সদর", type:"সরকারি"},
+  {name:"রাঙ্গামাটি জেনারেল হাসপাতাল", district:"রাঙ্গামাটি", area:"রাঙ্গামাটি সদর", type:"সরকারি"},
+  {name:"রাঙ্গামাটি মেডিকেল কলেজ হাসপাতাল", district:"রাঙ্গামাটি", area:"রাঙ্গামাটি সদর", type:"মেডিকেল কলেজ"},
+  {name:"সাতক্ষীরা জেলা হাসপাতাল", district:"সাতক্ষীরা", area:"সাতক্ষীরা সদর", type:"সরকারি"},
+  {name:"সাতক্ষীরা মেডিকেল কলেজ হাসপাতাল", district:"সাতক্ষীরা", area:"সাতক্ষীরা সদর", type:"মেডিকেল কলেজ"},
+  {name:"শরীয়তপুর সদর হাসপাতাল", district:"শরীয়তপুর", area:"শরীয়তপুর সদর", type:"সরকারি"},
+  {name:"শেরপুর জেলা হাসপাতাল", district:"শেরপুর", area:"শেরপুর সদর", type:"সরকারি"},
+  {name:"সুনামগঞ্জ সদর হাসপাতাল", district:"সুনামগঞ্জ", area:"সুনামগঞ্জ সদর", type:"সরকারি"},
+  {name:"সুনামগঞ্জ মেডিকেল কলেজ হাসপাতাল", district:"সুনামগঞ্জ", area:"সুনামগঞ্জ সদর", type:"মেডিকেল কলেজ"},
+  {name:"ঠাকুরগাঁও জেলা হাসপাতাল", district:"ঠাকুরগাঁও", area:"ঠাকুরগাঁও সদর", type:"সরকারি"},
+  {name:"চাঁপাইনবাবগঞ্জ আধুনিক সদর হাসপাতাল", district:"চাঁপাইনবাবগঞ্জ", area:"চাঁপাইনবাবগঞ্জ সদর", type:"সরকারি"},
+  {name:"চাঁদপুর মেডিকেল কলেজ হাসপাতাল", district:"চাঁদপুর", area:"চাঁদপুর সদর", type:"মেডিকেল কলেজ"},
+  {name:"কক্সবাজার মেডিকেল কলেজ হাসপাতাল", district:"কক্সবাজার", area:"কক্সবাজার সদর", type:"মেডিকেল কলেজ"},
+  {name:"জামালপুর মেডিকেল কলেজ হাসপাতাল", district:"জামালপুর", area:"জামালপুর সদর", type:"মেডিকেল কলেজ"},
+  {name:"যশোর মেডিকেল কলেজ হাসপাতাল", district:"যশোর", area:"যশোর সদর", type:"মেডিকেল কলেজ"},
+  {name:"নোয়াখালী মেডিকেল কলেজ হাসপাতাল", district:"নোয়াখালী", area:"মাইজদী", type:"মেডিকেল কলেজ"},
+  {name:"নেত্রকোণা মেডিকেল কলেজ হাসপাতাল", district:"নেত্রকোণা", area:"নেত্রকোণা সদর", type:"মেডিকেল কলেজ"},
+  {name:"টাঙ্গাইল মেডিকেল কলেজ হাসপাতাল", district:"টাঙ্গাইল", area:"টাঙ্গাইল সদর", type:"মেডিকেল কলেজ"},
+  {name:"কুমিল্লা জেনারেল হাসপাতাল", district:"কুমিল্লা", area:"কুমিল্লা সদর", type:"সরকারি"},
+  {name:"খুলনা জেনারেল হাসপাতাল", district:"খুলনা", area:"খুলনা সদর", type:"সরকারি"},
+  {name:"মোহাম্মদ আলী জেলা হাসপাতাল", district:"বগুড়া", area:"বগুড়া সদর", type:"সরকারি"},
+  {name:"ফরিদপুর জেনারেল হাসপাতাল", district:"ফরিদপুর", area:"ফরিদপুর সদর", type:"সরকারি"},
+  {name:"গাজীপুর জেলা হাসপাতাল", district:"গাজীপুর", area:"গাজীপুর সদর", type:"সরকারি"},
+  {name:"সিরাজগঞ্জ জেনারেল হাসপাতাল", district:"সিরাজগঞ্জ", area:"সিরাজগঞ্জ সদর", type:"সরকারি"},
+  {name:"বরিশাল জেনারেল হাসপাতাল", district:"বরিশাল", area:"বরিশাল সদর", type:"সরকারি"},
+  {name:"দিনাজপুর সদর হাসপাতাল", district:"দিনাজপুর", area:"দিনাজপুর সদর", type:"সরকারি"},
+  {name:"গোপালগঞ্জ জেনারেল হাসপাতাল", district:"গোপালগঞ্জ", area:"গোপালগঞ্জ সদর", type:"সরকারি"},
+  {name:"কিশোরগঞ্জ সদর হাসপাতাল", district:"কিশোরগঞ্জ", area:"কিশোরগঞ্জ সদর", type:"সরকারি"},
+  {name:"চট্টগ্রাম ইন্টারন্যাশনাল মেডিকেল কলেজ হাসপাতাল", district:"চট্টগ্রাম", area:"চান্দগাঁও", type:"বেসরকারি"},
+  {name:"ইসলামী ব্যাংক হাসপাতাল", district:"খুলনা", area:"খুলনা সদর", type:"বেসরকারি"},
+  {name:"আদ-দ্বীন সকিনা মেডিকেল কলেজ হাসপাতাল", district:"যশোর", area:"যশোর সদর", type:"বেসরকারি"},
+  {name:"কমিউনিটি বেজড মেডিকেল কলেজ হাসপাতাল", district:"ময়মনসিংহ", area:"ময়মনসিংহ সদর", type:"বেসরকারি"},
+  {name:"সেন্ট্রাল মেডিকেল কলেজ হাসপাতাল", district:"কুমিল্লা", area:"কুমিল্লা সদর", type:"বেসরকারি"},
+  {name:"কুমুদিনী হাসপাতাল", district:"টাঙ্গাইল", area:"মির্জাপুর", type:"বেসরকারি"},
+  {name:"ল্যাম্ব হাসপাতাল", district:"দিনাজপুর", area:"পার্বতীপুর", type:"বেসরকারি"}
+];
+
+/* ডেমো ডোনার — শুধু দেখানোর জন্য। demo:true থাকতেই হবে, নইলে আসল ডোনারের
+   মতো খালি নম্বর + চালু কল বোতাম দেখাতো (v1.0-এর বাগ)। */
+var DEMO_DONORS = [
+  {name:"ডেমো ডোনার ১", phone:"", group:"A+", district:"ঢাকা", thana:"সদর", lastDonation:"2026-08-20", demo:true},
+  {name:"ডেমো ডোনার ২", phone:"", group:"B+", district:"চট্টগ্রাম", thana:"সদর", lastDonation:"2026-07-15", demo:true},
+  {name:"ডেমো ডোনার ৩", phone:"", group:"O+", district:"খুলনা", thana:"সদর", lastDonation:"", demo:true},
+  {name:"ডেমো ডোনার ৪", phone:"", group:"AB+", district:"রাজশাহী", thana:"সদর", lastDonation:"2026-09-02", demo:true},
+  {name:"ডেমো ডোনার ৫", phone:"", group:"A-", district:"সিলেট", thana:"সদর", lastDonation:"", demo:true},
+  {name:"ডেমো ডোনার ৬", phone:"", group:"O-", district:"বরিশাল", thana:"সদর", lastDonation:"2026-06-11", demo:true},
+  {name:"ডেমো ডোনার ৭", phone:"", group:"B-", district:"কুমিল্লা", thana:"সদর", lastDonation:"", demo:true},
+  {name:"ডেমো ডোনার ৮", phone:"", group:"AB-", district:"ময়মনসিংহ", thana:"সদর", lastDonation:"2026-08-05", demo:true},
+  {name:"ডেমো ডোনার ৯", phone:"", group:"A+", district:"রংপুর", thana:"সদর", lastDonation:"", demo:true},
+  {name:"ডেমো ডোনার ১০", phone:"", group:"O+", district:"নারায়ণগঞ্জ", thana:"সদর", lastDonation:"2026-09-19", demo:true}
+];
+var DEMO_REQUESTS = [
+  {id:"demo-r1", patient:"ডেমো রোগী", group:"A+", bags:2, hospital:"ডেমো হাসপাতাল", district:"ঢাকা", thana:"সদর", neededDate:"2026-11-21", neededTime:"সকাল ১০টা", urgent:true, contact:"", demo:true, createdAt: Date.now() - 2*86400000},
+  {id:"demo-r2", patient:"ডেমো রোগী ২", group:"O-", bags:1, hospital:"ডেমো হাসপাতাল ২", district:"চট্টগ্রাম", thana:"সদর", neededDate:"2026-11-22", neededTime:"দুপুর ২টা", urgent:false, contact:"", demo:true, createdAt: Date.now() - 1*86400000}
+];
+
+/* ---- local storage ---- */
+function lsGet(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
+function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+var myDonors = lsGet("w8bloodbox_donors", []);        // এই ফোনে রেজিস্টার করা ডোনার
+var myAccounts = lsGet("w8bloodbox_accounts", []);    // এই ফোনের অ্যাকাউন্ট (পাসওয়ার্ড এখানেই থাকে)
+var myRequests = lsGet("w8bloodbox_requests", []);    // এই ফোনের অনুরোধ
+var session = lsGet("w8bloodbox_session", null);      // {phone}
+var onlineDonors = [];   // Firebase থেকে আসা আসল ডোনার
+var onlineLoaded = false;
+
+/* ---- helpers ---- */
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function $(id){ return document.getElementById(id); }
+function toast(msg){ if (window.W8Native && W8Native.toast) { W8Native.toast(msg); } else { alert(msg); } }
+function validPhone(p){ return /^01[3-9][0-9]{8}$/.test(p); }
+function maskPhone(){ return "০১•••-••••••"; }
+var BN_MONTHS = ["জানুয়ারি","ফেব্রুয়ারি","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"];
+function bnDigits(s){ return String(s).replace(/[0-9]/g, function(c){ return "০১২৩৪৫৬৭৮৯"[+c]; }); }
+function fmtDate(d){ if(!d) return "জানা নেই"; var p = d.split("-"); if(p.length !== 3) return d; var m = +p[1]; return bnDigits(+p[2]) + " " + (BN_MONTHS[m-1] || "") + ", " + bnDigits(p[0]); }
+function fmtDateShort(d){ if(!d) return ""; var p = d.split("-"); if(p.length !== 3) return d; var m = +p[1]; return bnDigits(+p[2]) + " " + (BN_MONTHS[m-1] || ""); }
+function relTime(ts){ if(!ts) return ""; var days = Math.floor((Date.now() - ts) / 86400000); if (days <= 0) return "আজ"; if (days === 1) return "১ দিন আগে"; return bnDigits(days) + " দিন আগে"; }
+
+/* ---- native bridge: HTTP via Java (HttpURLConnection) ----
+   file:// পেজ থেকে fetch() এই ফোনে ঠিকমতো চলে না, তাই নেটওয়ার্ক কল
+   Java bridge দিয়ে যায়। ব্রাউজারে টেস্টের সময় fetch() ফলব্যাক। */
+var __apiSeq = 0, __apiCbs = {};
+function __apiDone(id, jsonStr){
+  var cb = __apiCbs[id]; delete __apiCbs[id];
+  if (!cb) return;
+  try { cb(JSON.parse(jsonStr)); } catch(e){ cb({ok:false, error:"bad response"}); }
+}
+function apiRequest(method, url, body, cb){
+  var id = ++__apiSeq; __apiCbs[id] = cb;
+  setTimeout(function(){ if (__apiCbs[id]) { delete __apiCbs[id]; cb({ok:false, error:"timeout"}); } }, 20000);
+  try {
+    if (window.W8Native && W8Native.http) { W8Native.http(method, url, body || "", id); return; }
+  } catch(e){ /* fall through to fetch */ }
+  var opt = {method: method, headers: {"Content-Type": "application/json"}};
+  if (body) opt.body = body;
+  fetch(url, opt).then(function(r){ return r.text().then(function(t){
+    __apiDone(id, JSON.stringify({ok: r.ok, status: r.status, body: t})); }); })
+  .catch(function(e){ __apiDone(id, JSON.stringify({ok:false, error:"network"})); });
+}
+
+/* ---- Firebase sync ---- */
+function syncDonors(cb){
+  apiRequest("GET", FB_BASE + "/donors.json", null, function(res){
+    if (res.ok && res.body) {
+      try {
+        var data = JSON.parse(res.body);
+        if (data && data.error) { onlineLoaded = false; }
+        else {
+          onlineDonors = [];
+          if (data) { for (var k in data) { if (data[k] && data[k].phone) { var d = data[k]; d.fbKey = k; onlineDonors.push(d); } } }
+          onlineDonors.sort(function(a,b){ return (b.createdAt||0) - (a.createdAt||0); });
+          onlineLoaded = true;
+          retryPending();
+        }
+      } catch(e){ onlineLoaded = false; }
+    } else { onlineLoaded = false; }
+    updateSyncNote();
+    renderDonors(); renderHomeRequests(); renderMessages();
+    if (cb) cb(onlineLoaded);
+  });
+}
+function syncAll(){
+  syncDonors(function(ok1){
+    syncRequests(function(ok2){
+      toast((ok1 && ok2) ? "অনলাইন তালিকা আপডেট হয়েছে" : (ok1 || ok2) ? "একটি তালিকা আপডেট হয়েছে, অন্যটি পাওয়া যায়নি" : "অনলাইন তালিকা পাওয়া যায়নি — এই ফোনের তথ্য দেখানো হচ্ছে");
+    });
+  });
+}
+function retryPending(){
+  // আগে অফলাইনে সেভ হওয়া ডোনার অনলাইনে পাঠানোর চেষ্টা
+  var pending = myDonors.filter(function(d){ return d.synced === false; });
+  pending.forEach(function(d){
+    if (onlineDonors.some(function(o){ return o.phone === d.phone; })) { d.synced = true; lsSet("w8bloodbox_donors", myDonors); return; }
+    postDonor(d, function(ok){ if (ok) { d.synced = true; lsSet("w8bloodbox_donors", myDonors); } });
+  });
+}
+function postDonor(donor, cb){
+  var payload = {name: donor.name, phone: donor.phone, group: donor.group,
+    district: donor.district, thana: donor.thana || "", lastDonation: donor.lastDonation || "",
+    createdAt: donor.createdAt || Date.now(), consent: true};
+  apiRequest("POST", FB_BASE + "/donors.json", JSON.stringify(payload), function(res){
+    if (res.ok && res.body) {
+      try { var r = JSON.parse(res.body); if (r && r.name) { donor.fbKey = r.name; if (cb) cb(true, r.name); return; } } catch(e){}
+    }
+    if (cb) cb(false);
+  });
+}
+
+/* ---- Firebase requests sync (v3.0) ----
+   অনুরোধও ডোনারের মতো অনলাইনে যায়: /requests নোড, একই FB_BASE,
+   কোনো সিক্রেট বা লগইন ছাড়া। নিয়ম (rules) না বসানো পর্যন্ত লেখা
+   401 ফিরবে — তখন অ্যাপ সততার সাথে এই ফোনের অনুরোধই দেখায়। */
+var onlineRequests = [];
+var requestsLoaded = false;
+function syncRequests(cb){
+  apiRequest("GET", FB_BASE + "/requests.json", null, function(res){
+    if (res.ok && res.body) {
+      try {
+        var data = JSON.parse(res.body);
+        if (data && data.error) { requestsLoaded = false; }
+        else {
+          onlineRequests = [];
+          if (data) { for (var k in data) { if (data[k] && data[k].patient) { var r = data[k]; r.fbKey = k; if (!r.id) r.id = k; onlineRequests.push(r); } } }
+          onlineRequests.sort(function(a,b){ return (b.createdAt||0) - (a.createdAt||0); });
+          requestsLoaded = true;
+          retryPendingRequests();
+        }
+      } catch(e){ requestsLoaded = false; }
+    } else { requestsLoaded = false; }
+    updateReqNote();
+    renderRequests(); renderHomeRequests(); renderMessages();
+    if (cb) cb(requestsLoaded);
+  });
+}
+function updateReqNote(){
+  var el = $("syncNoteReq"); if (!el) return;
+  el.textContent = requestsLoaded
+    ? "✓ অনলাইন অনুরোধ লোড হয়েছে — সব ফোনের অনুরোধ এখানে দেখা যাচ্ছে।"
+    : "⚠ অনলাইন অনুরোধ পাওয়া যায়নি — এই ফোনের অনুরোধ দেখানো হচ্ছে। ইন্টারনেট চেক করে রিফ্রেশ করুন।";
+  el.classList.toggle("green", requestsLoaded);
+}
+function postRequest(req, cb){
+  var payload = {patient: req.patient, group: req.group, bags: req.bags, hospital: req.hospital,
+    district: req.district, thana: req.thana || "", neededDate: req.neededDate || "", neededTime: req.neededTime || "",
+    urgent: !!req.urgent, contact: req.contact || "", createdAt: req.createdAt || Date.now(), consent: true};
+  apiRequest("POST", FB_BASE + "/requests.json", JSON.stringify(payload), function(res){
+    if (res.ok && res.body) {
+      try { var r = JSON.parse(res.body); if (r && r.name) { if (cb) cb(true, r.name); return; } } catch(e){}
+    }
+    if (cb) cb(false);
+  });
+}
+function retryPendingRequests(){
+  var pending = myRequests.filter(function(r){ return r.synced === false && !r.fbKey; });
+  pending.forEach(function(r){
+    postRequest(r, function(ok, key){ if (ok) { r.synced = true; r.fbKey = key; lsSet("w8bloodbox_requests", myRequests); } });
+  });
+}
+function allRequests(){
+  var list = [], seen = {};
+  onlineRequests.forEach(function(r){ var k = r.fbKey || r.id; if (k && !seen[k]) { seen[k] = 1; list.push(r); } });
+  myRequests.forEach(function(r){ var k = r.fbKey || r.id; if (k && !seen[k]) { seen[k] = 1; list.push(r); } });
+  return list.concat(DEMO_REQUESTS);
+}
+function findRequest(id){
+  var list = allRequests();
+  for (var i = 0; i < list.length; i++) if (list[i].id === id || list[i].fbKey === id) return list[i];
+  return null;
+}
+function deleteRequest(id){
+  var req = findRequest(id); if (!req) return;
+  myRequests = myRequests.filter(function(r){ return r.id !== id && r.fbKey !== id; });
+  lsSet("w8bloodbox_requests", myRequests);
+  renderRequests(); renderHomeRequests(); renderMessages(); closeModal();
+  if (req.fbKey) {
+    apiRequest("DELETE", FB_BASE + "/requests/" + encodeURIComponent(req.fbKey) + ".json", null, function(res){
+      toast(res.ok ? "অনুরোধটি মুছে ফেলা হয়েছে" : "এই ফোন থেকে মুছে গেছে — অনলাইন থেকে মুছতে ইন্টারনেট লাগবে");
+    });
+  } else { toast("অনুরোধটি মুছে ফেলা হয়েছে"); }
+}
+function updateSyncNote(){
+  var msg = onlineLoaded
+    ? "✓ অনলাইন তালিকা লোড হয়েছে — সব ফোনের ডোনার এখানে দেখা যাচ্ছে।"
+    : "⚠ অনলাইন তালিকা পাওয়া যায়নি — এই ফোনের তথ্য + ডেমো দেখানো হচ্ছে। ইন্টারনেট চেক করে রিফ্রেশ করুন।";
+  var els = document.querySelectorAll(".sync-note");
+  for (var i = 0; i < els.length; i++) { els[i].textContent = msg; els[i].classList.toggle("green", onlineLoaded); }
+}
+
+/* ---- navigation / drawer / modal ---- */
+function showTab(name){
+  var tabs = document.querySelectorAll(".tab");
+  for (var i = 0; i < tabs.length; i++) tabs[i].style.display = "none";
+  var t = $("tab-" + name); if (t) t.style.display = "block";
+  var btns = document.querySelectorAll(".bottomnav button");
+  for (var j = 0; j < btns.length; j++) btns[j].classList.toggle("active", btns[j].getAttribute("data-tab") === name);
+  closeDrawer();
+  if (name === "donors") renderDonors();
+  if (name === "requests") renderRequests();
+  if (name === "hospitals") renderHospitals();
+  if (name === "home") renderHomeRequests();
+  if (name === "profile") renderProfile();
+  if (name === "messages") renderMessages();
+  window.scrollTo(0, 0);
+}
+function openDrawer(){ $("drawer").classList.add("on"); $("backdrop").classList.add("on"); }
+function closeDrawer(){ $("drawer").classList.remove("on"); $("backdrop").classList.remove("on"); }
+function openModal(html){ $("modalCard").innerHTML = html; $("modal").classList.add("on"); }
+function closeModal(){ $("modal").classList.remove("on"); }
+var INFO = {
+  about: ["আমাদের সম্পর্কে", "W8BDCR Blood Box — রক্তদাতা আর রক্তের প্রয়োজনে থাকা মানুষকে এক জায়গায় আনার চেষ্টা। ডোনার নিবন্ধন করলে সব ফোনের তালিকায় দেখা যায়।"],
+  terms: ["ব্যবহারের শর্তাবলী", "এই অ্যাপ শুধু রক্তদাতা খোঁজার কাজে ব্যবহার করবেন। ভুয়া তথ্য দেবেন না। ডোনারের নম্বর শুধু রক্তের প্রয়োজনে কল করবেন।"],
+  privacy: ["গোপনীয়তা নীতি", "নিবন্ধনের সময় দেওয়া নাম, নম্বর, রক্তের গ্রুপ ও জেলা অনলাইন তালিকায় সবার জন্য দেখা যায় — এটাই এই অ্যাপের কাজ। পাসওয়ার্ড শুধু আপনার ফোনেই থাকে, অনলাইনে যায় না।"],
+  medical: ["স্বাস্থ্য ও চিকিৎসা ডিসক্লেইমার", "এই অ্যাপ কোনো চিকিৎসা পরামর্শ দেয় না। রক্ত দেওয়ার আগে অবশ্যই ডাক্তার বা হাসপাতালের পরামর্শ নিন।"],
+  health: ["স্বাস্থ্য ও চিকিৎসা ডিসক্লেইমার", "এই অ্যাপ কোনো চিকিৎসা পরামর্শ দেয় না। রক্ত দেওয়ার আগে অবশ্যই ডাক্তার বা হাসপাতালের পরামর্শ নিন।"],
+  delete: ["অ্যাকাউন্ট ও ডেটা মুছে ফেলার নির্দেশিকা", "প্রোফাইল থেকে 'আমার রেজিস্ট্রেশন মুছে ফেলুন' চাপলে আপনার তথ্য এই ফোন ও অনলাইন তালিকা থেকে মুছে যাবে।"],
+  faq: ["সাধারণ জিজ্ঞাসা", "প্রশ্ন: অন্য ফোনে আমার নাম দেখা যাবে? — হ্যাঁ, নিবন্ধনের পর অনলাইন তালিকায় সব ফোনে দেখা যায়। প্রশ্ন: ডেমো ডোনার কী? — শুধু দেখানোর জন্য নমুনা, তাদের কল করা যায় না।"]
+};
+function openInfo(key){
+  var p = INFO[key]; if (!p) return;
+  closeDrawer();
+  openModal('<button class="x" onclick="closeModal()">✕</button><h2>' + esc(p[0]) + '</h2><p>' + esc(p[1]) + '</p>');
+}
+</script>
+
+<style>
+/* v2.0 additions — classes the v1.1 stylesheet does not define */
+.big-red { display:block; width:100%; padding:14px; margin:12px 0; font-size:17px; font-weight:bold; color:#fff; background:#d32f2f; border:none; border-radius:12px; }
+.ghost-btn { display:block; width:100%; padding:12px; margin:8px 0; font-size:15px; font-weight:bold; color:#d32f2f; background:#fff; border:2px solid #d32f2f; border-radius:12px; }
+.err { color:#d32f2f; font-size:14px; margin-top:8px; min-height:18px; }
+.groups { display:flex; flex-wrap:wrap; gap:8px; }
+.pill { border:none; cursor:pointer; }
+.pill.on { background:#d32f2f; color:#fff; }
+.refresh-btn { width:auto; height:auto; padding:8px 14px; font-size:14px; font-weight:bold; color:#d32f2f; border:1.5px solid #d32f2f; background:#fff; border-radius:10px; }
+.toggle-row span { flex:1; font-size:15px; font-weight:bold; color:#b71c1c; }
+.sync-note { margin-top:12px; }
+/* v3.0 additions — hero banner carousel, password eye, request group drop */
+.hero-banner { position:relative; border-radius:20px; overflow:hidden; margin-bottom:14px; background:linear-gradient(135deg,#8e1111,#d32f2f 55%,#7f1010); color:#fff; padding:26px 20px 18px; box-shadow:0 3px 10px rgba(211,47,47,.35); min-height:200px; }
+.hero-banner .drop-bg { position:absolute; right:-12px; top:-46px; font-size:170px; opacity:.16; }
+.hero-banner h2 { font-size:27px; line-height:1.3; position:relative; }
+.hero-banner p { font-size:14px; opacity:.92; margin-top:8px; line-height:1.6; position:relative; max-width:76%; }
+.hero-banner .hero-cta { display:inline-block; margin-top:14px; padding:11px 22px; background:#fff; color:#d32f2f; font-weight:bold; font-size:16px; border:none; border-radius:10px; position:relative; }
+.hero-banner .arrow { position:absolute; top:50%; margin-top:-19px; width:38px; height:38px; border-radius:50%; background:rgba(0,0,0,.35); color:#fff; border:none; font-size:20px; z-index:2; }
+.hero-banner .arrow.l { left:10px; }
+.hero-banner .arrow.r { right:10px; }
+.hero-banner .dots { margin-top:16px; text-align:center; position:relative; }
+.hero-banner .dots span { display:inline-block; width:8px; height:8px; border-radius:8px; background:rgba(255,255,255,.45); margin:0 3px; }
+.hero-banner .dots span.on { width:22px; background:#fff; }
+.pw-wrap { position:relative; }
+.pw-wrap input { padding-right:44px; }
+.eye-btn { position:absolute; right:6px; top:50%; margin-top:-17px; width:34px; height:34px; border:none; background:none; font-size:19px; }
+.gdrop { width:46px; height:46px; border-radius:50%; background:#d32f2f; color:#fff; font-size:17px; font-weight:bold; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+</style>
+<script>
+/* ================= render ================= */
+function allDonors(){
+  var list = [], seen = {};
+  onlineDonors.forEach(function(d){ if (d.phone && !seen[d.phone]) { seen[d.phone] = 1; list.push(d); } });
+  myDonors.forEach(function(d){ if (d.phone && !seen[d.phone]) { seen[d.phone] = 1; list.push(d); } });
+  return list.concat(DEMO_DONORS);
+}
+function findDonor(key){
+  var list = allDonors();
+  for (var i = 0; i < list.length; i++) if (list[i].phone === key || list[i].name === key) return list[i];
+  return null;
+}
+function renderDonors(){
+  var fG = $("fGroup") ? $("fGroup").value : "সবগুলো";
+  var fD = $("fDistrict").value, fT = donorThanaValue();
+  var list = allDonors().filter(function(d){
+    if (fG !== "সবগুলো" && d.group !== fG) return false;
+    if (fD && d.district !== fD) return false;
+    if (fT && (d.thana || "").indexOf(fT) < 0) return false;
+    return true;
+  });
+  var html = "";
+  if (!list.length) html = '<div class="empty">কোনো ডোনার পাওয়া যায়নি। ফিল্টার বদলে দেখুন।</div>';
+  list.forEach(function(d){ html += donorCard(d); });
+  $("donorList").innerHTML = html;
+}
+function donorCard(d){
+  var demo = !!d.demo;
+  var badge = demo ? '<span class="badge demo">ডেমো</span>' : "";
+  var last = d.lastDonation ? fmtDate(d.lastDonation) : "জানা নেই";
+  var callBtn = demo
+    ? '<button class="callbtn" disabled>📞 কল করা যাবে না</button>'
+    : '<button class="callbtn" onclick="callDonor(\'' + esc(d.phone) + '\')">📞 কল করুন</button>';
+  var key = demo ? d.name : d.phone;
+  return '<div class="dcard' + (demo ? ' demo' : '') + '">'
+    + '<div class="dcard-top"><div class="giant">' + esc(d.group) + '</div><div class="gbox">' + esc(d.group) + '</div></div>'
+    + '<div class="dcard-body">'
+    + '<div class="dname">' + esc(d.name) + ' ' + badge + '</div>'
+    + '<div class="dloc">📍 ' + esc(d.thana || "") + (d.thana ? ", " : "") + esc(d.district) + '</div>'
+    + '<div class="dinfo"><div><div class="lbl">যোগ্যতা</div><div class="val">✅ রক্তদানে প্রস্তুত</div></div>'
+    + '<div><div class="lbl">সর্বশেষ রক্তদান</div><div class="val">📅 ' + last + '</div></div></div>'
+    + '<div class="dbtns">' + callBtn
+    + '<button class="profbtn" onclick="viewDonor(\'' + esc(key) + '\')">প্রোফাইল →</button></div>'
+    + '</div></div>';
+}
+function callDonor(phone){
+  if (!phone) return;
+  if (window.W8Native && W8Native.dial) { W8Native.dial(phone); }
+  else { location.href = "tel:" + phone; }
+}
+function viewDonor(key){
+  var d = findDonor(key); if (!d) return;
+  var demo = !!d.demo;
+  var last = d.lastDonation ? fmtDate(d.lastDonation) : "জানা নেই";
+  var callBtn = demo
+    ? '<button class="btn grey" disabled>ডেমো ডোনার — কল করা যাবে না</button>'
+    : '<button class="btn green" onclick="callDonor(\'' + esc(d.phone) + '\')">📞 কল করুন</button>';
+  openModal('<button class="x" onclick="closeModal()">✕</button><h2>' + esc(d.name) + (demo ? ' <span class="badge demo">ডেমো</span>' : '') + '</h2>'
+    + '<p>রক্তের গ্রুপ: <b>' + esc(d.group) + '</b><br>ঠিকানা: ' + esc(d.thana || "") + (d.thana ? ", " : "") + esc(d.district)
+    + '<br>নম্বর: ' + (demo ? maskPhone() : esc(d.phone))
+    + '<br>সর্বশেষ রক্তদান: ' + last + '</p>' + callBtn);
+}
+function renderRequests(){
+  var g = $("rqfGroup") ? $("rqfGroup").value : "সবগুলো";
+  var d = $("rqfDistrict") ? $("rqfDistrict").value : "";
+  var t = reqThanaValue();
+  var list = allRequests().filter(function(r){
+    if (g !== "সবগুলো" && r.group !== g) return false;
+    if (d && r.district !== d) return false;
+    if (t && (r.thana || "").indexOf(t) < 0) return false;
+    return true;
+  });
+  var html = "";
+  if (!list.length) html = '<div class="empty">এখনো কোনো অনুরোধ নেই। ফিল্টার বদলে দেখুন।</div>';
+  list.forEach(function(r){ html += requestCard(r); });
+  $("requestList").innerHTML = html;
+}
+function requestCard(r){
+  var badge = r.urgent ? '<span class="badge urgent">● জরুরি</span>' : "";
+  var demo = r.demo ? '<span class="badge demo">ডেমো</span>' : "";
+  var when = (r.neededDate ? fmtDateShort(r.neededDate) : "") + (r.neededTime ? ", " + esc(r.neededTime) : "");
+  var posted = r.createdAt ? '<div class="rage">পোস্ট করা হয়েছে ' + relTime(r.createdAt) + '</div>' : "";
+  return '<div class="rcard' + (r.demo ? ' demo' : '') + '">'
+    + '<div class="rhosp"><div class="hic">🏥</div><div class="hname">' + esc(r.hospital) + ' ' + badge + ' ' + demo + '</div></div>'
+    + '<div class="rbody">'
+    + '<div style="display:flex;align-items:center;gap:10px"><div class="gdrop">' + esc(r.group) + '</div><div class="rpatient">' + esc(r.patient) + '</div></div>'
+    + '<div class="rneed">' + bnDigits(r.bags) + ' ব্যাগ ' + esc(r.group) + ' রক্ত প্রয়োজন</div>'
+    + '<div class="rmeta">📍 ' + esc(r.thana || "") + (r.thana ? ", " : "") + esc(r.district) + '</div>'
+    + (when ? '<div class="rmeta" style="color:#b45309">🕐 ' + when + '</div>' : '')
+    + posted
+    + '<div class="rbtns"><button class="offer" onclick="offerBlood(\'' + esc(r.id) + '\')">🩸 আমি রক্ত দিতে পারব</button>'
+    + '<button class="sq" onclick="shareRequest(\'' + esc(r.id) + '\')">↗</button>'
+    + '<button class="sq" onclick="viewRequest(\'' + esc(r.id) + '\')">ⓘ</button></div>'
+    + '</div></div>';
+}
+function renderHomeRequests(){
+  var list = allRequests().slice(0, 3);
+  var html = "";
+  if (!list.length) html = '<div class="empty">এখনো কোনো অনুরোধ নেই।</div>';
+  list.forEach(function(r){ html += requestCard(r); });
+  $("homeRequests").innerHTML = html;
+}
+
+/* ================= messages (বার্তা) ================= */
+function renderMessages(){
+  var u = $("msgUrgent"), m = $("msgMine");
+  if (!u || !m) return;
+  var myGroup = null;
+  if (session) {
+    var list = onlineDonors.concat(myDonors);
+    for (var i = 0; i < list.length; i++) if (list[i].phone === session.phone) { myGroup = list[i].group; break; }
+  }
+  var html = "";
+  if (!session) {
+    html = '<div class="note">লগইন করলে আপনার রক্তের গ্রুপের জরুরি অনুরোধ এখানে দেখা যাবে।</div>';
+  } else if (!myGroup) {
+    html = '<div class="note">আপনি এখনো ডোনার হিসেবে নিবন্ধন করেননি, তাই গ্রুপ মেলানো যাচ্ছে না।</div>';
+  } else {
+    var urg = allRequests().filter(function(r){ return r.urgent && r.group === myGroup && !r.demo; });
+    if (!urg.length) html = '<div class="empty">আপনার গ্রুপের (' + esc(myGroup) + ') কোনো জরুরি অনুরোধ এখন নেই।</div>';
+    else urg.forEach(function(r){ html += requestCard(r); });
+  }
+  u.innerHTML = html;
+  var html2 = "";
+  if (!myRequests.length) html2 = '<div class="empty">আপনি এখনো কোনো অনুরোধ করেননি।</div>';
+  else myRequests.forEach(function(r){
+    var st = r.fbKey
+      ? '<div class="note green" style="margin-top:-6px">✓ অনলাইনে আছে — সব ফোনে দেখা যাচ্ছে।</div>'
+      : '<div class="note" style="margin-top:-6px">শুধু এই ফোনে আছে — অনলাইনে যায়নি।</div>';
+    html2 += requestCard(r) + st;
+  });
+  m.innerHTML = html2;
+}
+
+/* ================= filters (থানা ড্রপডাউন) ================= */
+function fillThanaDropdown(selId, district){
+  var s = $(selId); if (!s) return;
+  var list = (district && THANAS[district]) || [];
+  var html = '<option value="">সব থানা</option>';
+  list.forEach(function(t){ html += '<option value="' + esc(t) + '">' + esc(t) + '</option>'; });
+  html += '<option value="__other">অন্যান্য</option>';
+  s.innerHTML = html;
+}
+function onGroupFilter(){ renderDonors(); }
+function onDistrictFilter(){ fillThanaDropdown("fThana", $("fDistrict").value); $("fThanaCustom").style.display = "none"; renderDonors(); }
+function onThanaFilter(){ var v = $("fThana").value; $("fThanaCustom").style.display = v === "__other" ? "block" : "none"; renderDonors(); }
+function donorThanaValue(){ var v = $("fThana").value; if (v === "__other") return $("fThanaCustom").value.trim(); return v; }
+function onReqDistrictFilter(){ fillThanaDropdown("rqfThana", $("rqfDistrict").value); renderRequests(); }
+function reqThanaValue(){ var s = $("rqfThana"); if (!s) return ""; return s.value === "__other" ? "" : s.value; }
+
+/* ================= hero carousel ================= */
+var HERO_SLIDES = [
+  {t:"জীবন বাঁচাতে", s:"আপনার এক ব্যাগ রক্ত বাঁচাতে পারে একটি জীবন।", b:"আজই রক্ত দিন", tab:"donors"},
+  {t:"ডোনার হোন, জীবন বাঁচান", s:"নিবন্ধন করুন — প্রয়োজনে সবাই আপনাকে খুঁজে পাবে।", b:"ডোনার হিসেবে যোগ দিন", tab:"register"},
+  {t:"যাদের এখন রক্ত প্রয়োজন", s:"অনুরোধগুলো দেখুন — আপনার গ্রুপ মিললে এগিয়ে আসুন।", b:"অনুরোধ দেখুন", tab:"requests"}
+];
+var heroIdx = 0, heroTimer = null;
+function heroShow(i){
+  heroIdx = (i + HERO_SLIDES.length) % HERO_SLIDES.length;
+  var s = HERO_SLIDES[heroIdx];
+  $("heroTitle").textContent = s.t; $("heroSub").textContent = s.s; $("heroCta").textContent = s.b;
+  var dots = "";
+  for (var j = 0; j < HERO_SLIDES.length; j++) dots += '<span class="' + (j === heroIdx ? "on" : "") + '" onclick="heroShow(' + j + ')"></span>';
+  $("heroDots").innerHTML = dots;
+}
+function heroGo(){ showTab(HERO_SLIDES[heroIdx].tab); }
+function heroMove(d){ heroShow(heroIdx + d); heroStart(); }
+function heroStart(){ if (heroTimer) clearInterval(heroTimer); heroTimer = setInterval(function(){ heroShow(heroIdx + 1); }, 5000); }
+
+/* ================= password eye ================= */
+function togglePw(id, btn){
+  var el = $(id); if (!el) return;
+  if (el.type === "password") { el.type = "text"; btn.textContent = "🙈"; }
+  else { el.type = "password"; btn.textContent = "👁"; }
+}
+function offerBlood(id){
+  var r = findRequest(id);
+  if (!r) return;
+  var contact = r.contact
+    ? '<p>যোগাযোগের নম্বর: <b>' + esc(r.contact) + '</b></p><button class="btn green" onclick="callDonor(\'' + esc(r.contact) + '\')">📞 কল করুন</button>'
+    : '<p>এটি ডেমো অনুরোধ — যোগাযোগের নম্বর দেওয়া নেই।</p>';
+  openModal('<button class="x" onclick="closeModal()">✕</button><h2>রক্ত দিতে পারব</h2>'
+    + '<p>রোগী: ' + esc(r.patient) + '<br>' + esc(r.bags) + ' ব্যাগ • ' + esc(r.group) + ' • ' + esc(r.hospital) + '</p>' + contact);
+}
+function shareRequest(id){
+  var r = findRequest(id);
+  if (!r) return;
+  var text = "রক্তের অনুরোধ: " + r.patient + " — " + r.bags + " ব্যাগ " + r.group + " দরকার, " + r.hospital + ", " + r.district + "। যোগাযোগ: " + (r.contact || "—") + " (W8BDCR Blood Box)";
+  if (window.W8Native && W8Native.share) { W8Native.share(text); }
+  else if (navigator.share) { navigator.share({text: text}).catch(function(){}); }
+  else { toast(text); }
+}
+function viewRequest(id){
+  var r = findRequest(id);
+  if (!r) return;
+  var when = (r.neededDate ? fmtDateShort(r.neededDate) : "") + (r.neededTime ? ", " + esc(r.neededTime) : "");
+  var contact = r.contact
+    ? '<p>যোগাযোগের নম্বর: <b>' + esc(r.contact) + '</b></p><button class="btn green" onclick="callDonor(\'' + esc(r.contact) + '\')">📞 কল করুন</button>'
+    : '<p>যোগাযোগের নম্বর দেওয়া নেই।</p>';
+  var mine = myRequests.some(function(x){ return x.id === id || x.fbKey === id; });
+  var del = mine ? '<button class="btn" style="background:#fff;color:#d32f2f;border:2px solid #d32f2f" onclick="deleteRequest(\'' + esc(id) + '\')">এই অনুরোধটি মুছুন</button>' : "";
+  openModal('<button class="x" onclick="closeModal()">✕</button><h2>' + esc(r.patient) + (r.urgent ? ' <span class="badge urgent">● জরুরি</span>' : '') + (r.demo ? ' <span class="badge demo">ডেমো</span>' : '') + '</h2>'
+    + '<p>' + bnDigits(r.bags) + ' ব্যাগ ' + esc(r.group) + ' রক্ত প্রয়োজন<br>হাসপাতাল: ' + esc(r.hospital)
+    + '<br>ঠিকানা: ' + esc(r.thana || "") + (r.thana ? ", " : "") + esc(r.district)
+    + (when ? '<br>সময়: ' + when : '')
+    + (r.createdAt ? '<br>পোস্ট করা হয়েছে ' + relTime(r.createdAt) : '') + '</p>'
+    + contact + del);
+}
+
+/* ================= hospitals ================= */
+function fillHospitals(){
+  var d = $("rqDistrict").value;
+  var list = HOSPITALS.filter(function(h){ return !d || h.district === d; });
+  var html = '<option value="">হাসপাতাল বেছে নিন</option>';
+  list.forEach(function(h){ html += '<option value="' + esc(h.name) + '">' + esc(h.name) + ' (' + esc(h.district) + ')</option>'; });
+  html += '<option value="__other">অন্য হাসপাতাল (নিজে লিখুন)</option>';
+  $("rqHospitalSel").innerHTML = html;
+  onHospSel();
+}
+function onHospSel(){
+  var v = $("rqHospitalSel").value;
+  $("rqHospitalCustom").style.display = v === "__other" ? "block" : "none";
+  if (v && v !== "__other" && !$("rqDistrict").value) {
+    for (var i = 0; i < HOSPITALS.length; i++) if (HOSPITALS[i].name === v) { $("rqDistrict").value = HOSPITALS[i].district; break; }
+  }
+}
+function renderHospitals(){
+  var q = $("hSearch").value.trim();
+  var d = $("hDistrict").value;
+  var list = HOSPITALS.filter(function(h){
+    if (d && h.district !== d) return false;
+    if (q && h.name.indexOf(q) < 0) return false;
+    return true;
+  });
+  $("hospCount").textContent = list.length + "টি হাসপাতাল";
+  var html = "";
+  if (!list.length) html = '<div class="empty">কোনো হাসপাতাল পাওয়া যায়নি। নাম বা জেলা বদলে দেখুন।</div>';
+  list.forEach(function(h){
+    html += '<div class="hitem"><div class="hic">🏥</div><div><div class="hname">' + esc(h.name) + '</div><div class="hloc">📍 ' + esc(h.area) + ', ' + esc(h.district) + ' • ' + esc(h.type || '') + '</div></div></div>';
+  });
+  $("hospitalList").innerHTML = html;
+}
+
+/* ================= requests form ================= */
+function openNewRequest(){ showTab("requests"); $("reqForm").style.display = "block"; window.scrollTo(0, 0); }
+function closeNewRequest(){ $("reqForm").style.display = "none"; }
+function submitRequest(){
+  var err = $("rqErr"); err.textContent = "";
+  var patient = $("rqPatient").value.trim();
+  var group = $("rqGroup").value;
+  var bags = parseInt($("rqBags").value, 10);
+  var hospSel = $("rqHospitalSel").value;
+  var hospital = hospSel === "__other" ? $("rqHospitalCustom").value.trim() : hospSel;
+  var district = $("rqDistrict").value;
+  var thana = $("rqThana").value.trim();
+  var date = $("rqDate").value;
+  var time = $("rqTime").value.trim();
+  var urgent = $("rqUrgent").checked;
+  var contact = $("rqContact").value.trim();
+  if (patient.length < 2) { err.textContent = "রোগীর নাম লিখুন।"; return; }
+  if (GROUPS.indexOf(group) < 0) { err.textContent = "রক্তের গ্রুপ বেছে নিন।"; return; }
+  if (!bags || bags < 1 || bags > 20) { err.textContent = "ব্যাগের সংখ্যা ১–২০ এর মধ্যে দিন।"; return; }
+  if (hospital.length < 2) { err.textContent = "হাসপাতাল বেছে নিন, না থাকলে নিজে লিখুন।"; return; }
+  if (DISTRICTS.indexOf(district) < 0) { err.textContent = "জেলা বেছে নিন।"; return; }
+  if (!validPhone(contact)) { err.textContent = "সঠিক ১১ ডিজিটের যোগাযোগ নম্বর দিন।"; return; }
+  var req = {id: "r-" + Date.now(), patient: patient, group: group, bags: bags, hospital: hospital,
+    district: district, thana: thana, neededDate: date, neededTime: time, urgent: urgent, contact: contact,
+    createdAt: Date.now(), synced: false};
+  myRequests.unshift(req); lsSet("w8bloodbox_requests", myRequests);
+  closeNewRequest(); renderRequests(); renderHomeRequests(); renderMessages();
+  postRequest(req, function(ok, key){
+    if (ok) {
+      req.synced = true; req.fbKey = key; lsSet("w8bloodbox_requests", myRequests);
+      syncRequests(function(){ renderRequests(); renderHomeRequests(); renderMessages(); });
+      toast("অনুরোধ অনলাইনে পাঠানো হয়েছে — সব ফোনে দেখা যাবে");
+    } else {
+      toast("অনলাইনে পাঠানো যায়নি — এই ফোনে সেভ আছে, পরে আবার চেষ্টা করবে");
+    }
+  });
+}
+
+/* ================= registration / login ================= */
+function toggleDonorFields(){ $("rgDonorFields").style.display = $("rgDonor").checked ? "block" : "none"; }
+function submitRegistration(){
+  var err = $("rgErr"); err.textContent = "";
+  var name = $("rgName").value.trim();
+  var email = $("rgEmail").value.trim();
+  var phone = $("rgPhone").value.trim();
+  var isDonor = $("rgDonor").checked;
+  var group = $("rgGroup").value;
+  var district = $("rgDistrict").value;
+  var thana = $("rgThana").value.trim();
+  var last = $("rgLast").value;
+  var pass = $("rgPass").value, pass2 = $("rgPass2").value;
+  if (name.length < 2) { err.textContent = "আপনার পুরো নাম লিখুন।"; return; }
+  if (!email || email.indexOf("@") < 1 || email.indexOf(".") < 0) { err.textContent = "সঠিক ইমেইল ঠিকানা দিন।"; return; }
+  if (!validPhone(phone)) { err.textContent = "সঠিক ১১ ডিজিটের নম্বর দিন (01 দিয়ে শুরু)।"; return; }
+  if (isDonor && GROUPS.indexOf(group) < 0) { err.textContent = "রক্তের গ্রুপ বেছে নিন।"; return; }
+  if (isDonor && DISTRICTS.indexOf(district) < 0) { err.textContent = "জেলা বেছে নিন।"; return; }
+  if (pass.length < 8) { err.textContent = "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।"; return; }
+  if (pass !== pass2) { err.textContent = "দুই পাসওয়ার্ড মিলছে না।"; return; }
+  var dup = onlineDonors.concat(myDonors).some(function(d){ return d.phone === phone; })
+    || myAccounts.some(function(a){ return a.phone === phone; });
+  if (dup) { err.textContent = "এই নম্বরে আগেই রেজিস্টার করা আছে — লগইন করুন।"; return; }
+  var donor = null;
+  if (isDonor) {
+    donor = {name: name, phone: phone, group: group, district: district, thana: thana,
+      lastDonation: last, createdAt: Date.now(), synced: false};
+    myDonors.push(donor); lsSet("w8bloodbox_donors", myDonors);
+  }
+  myAccounts.push({phone: phone, password: pass, name: name, email: email});
+  lsSet("w8bloodbox_accounts", myAccounts);
+  session = {phone: phone}; lsSet("w8bloodbox_session", session);
+  if (donor) {
+    if (onlineLoaded) {
+      postDonor(donor, function(ok){
+        if (ok) {
+          donor.synced = true; lsSet("w8bloodbox_donors", myDonors);
+          syncDonors(function(){ renderDonors(); });
+          toast("নিবন্ধন হয়েছে — এখন সব ফোনের তালিকায় দেখা যাবে");
+        } else {
+          toast("অনলাইনে পাঠানো যায়নি — তথ্য এই ফোনে সেভ আছে, পরে আবার চেষ্টা করবে");
+        }
+      });
+    } else {
+      toast("অনলাইন তালিকা পাওয়া যায়নি — তথ্য এই ফোনে সেভ হয়েছে");
+    }
+  } else {
+    toast("অ্যাকাউন্ট খোলা হয়েছে");
+  }
+  showTab("profile");
+}
+function login(){
+  var phone = $("lgPhone").value.trim(), pass = $("lgPass").value;
+  var err = $("lgErr"); err.textContent = "";
+  if (!validPhone(phone)) { err.textContent = "সঠিক ১১ ডিজিটের নম্বর দিন।"; return; }
+  var acc = null;
+  for (var i = 0; i < myAccounts.length; i++) if (myAccounts[i].phone === phone) { acc = myAccounts[i]; break; }
+  if (acc) {
+    if (acc.password && acc.password !== pass) { err.textContent = "পাসওয়ার্ড ভুল।"; return; }
+    session = {phone: phone}; lsSet("w8bloodbox_session", session);
+    renderProfile(); toast("লগইন হয়েছে"); return;
+  }
+  var donor = null;
+  var list = onlineDonors.concat(myDonors);
+  for (var j = 0; j < list.length; j++) if (list[j].phone === phone) { donor = list[j]; break; }
+  if (donor) {
+    myAccounts.push({phone: phone, password: "", name: donor.name});
+    lsSet("w8bloodbox_accounts", myAccounts);
+    session = {phone: phone}; lsSet("w8bloodbox_session", session);
+    renderProfile(); toast("লগইন হয়েছে — এই ফোনে পাসওয়ার্ড সেট করে নিন"); return;
+  }
+  err.textContent = "এই নম্বরে কোনো অ্যাকাউন্ট পাওয়া যায়নি — আগে নিবন্ধন করুন।";
+}
+function logout(){
+  session = null; lsSet("w8bloodbox_session", null);
+  renderProfile(); toast("লগআউট হয়েছে");
+}
+function deleteMyRegistration(){
+  if (!session) return;
+  var phone = session.phone;
+  myAccounts = myAccounts.filter(function(a){ return a.phone !== phone; });
+  lsSet("w8bloodbox_accounts", myAccounts);
+  var mine = null;
+  myDonors = myDonors.filter(function(d){ if (d.phone === phone) { mine = d; return false; } return true; });
+  lsSet("w8bloodbox_donors", myDonors);
+  var online = null;
+  for (var i = 0; i < onlineDonors.length; i++) if (onlineDonors[i].phone === phone) { online = onlineDonors[i]; break; }
+  var fbKey = (mine && mine.fbKey) || (online && online.fbKey);
+  session = null; lsSet("w8bloodbox_session", null);
+  renderProfile();
+  if (fbKey) {
+    apiRequest("DELETE", FB_BASE + "/donors/" + encodeURIComponent(fbKey) + ".json", null, function(res){
+      toast(res.ok ? "আপনার রেজিস্ট্রেশন মুছে ফেলা হয়েছে" : "এই ফোন থেকে মুছে গেছে — অনলাইন তালিকা থেকে মুছতে ইন্টারনেট লাগবে");
+    });
+  } else if (mine) {
+    toast("এই ফোন থেকে মুছে ফেলা হয়েছে");
+  } else {
+    toast("আপনার রেজিস্ট্রেশন মুছে ফেলা হয়েছে");
+  }
+}
+function renderProfile(){
+  var out = $("profileOut"), inn = $("profileIn");
+  if (!session) { out.style.display = "block"; inn.style.display = "none"; renderDrawerLogin(); return; }
+  out.style.display = "none"; inn.style.display = "block";
+  var phone = session.phone;
+  var acc = null;
+  for (var i = 0; i < myAccounts.length; i++) if (myAccounts[i].phone === phone) { acc = myAccounts[i]; break; }
+  var donor = null;
+  var list = onlineDonors.concat(myDonors);
+  for (var j = 0; j < list.length; j++) if (list[j].phone === phone) { donor = list[j]; break; }
+  var name = acc ? acc.name : (donor ? donor.name : phone);
+  var html = '<div style="font-size:17px;font-weight:700">' + esc(name) + '</div>'
+    + '<div style="color:#555;font-size:14px;margin-top:4px">📞 ' + esc(phone) + '</div>';
+  if (donor) {
+    html += '<div style="margin-top:10px"><span class="gbox" style="width:64px;height:64px;font-size:24px;display:inline-flex">' + esc(donor.group) + '</span></div>'
+      + '<div style="color:#555;font-size:14px;margin-top:8px">📍 ' + esc(donor.thana || "") + (donor.thana ? ", " : "") + esc(donor.district) + '</div>'
+      + '<div style="color:#555;font-size:14px">সর্বশেষ রক্তদান: ' + fmtDate(donor.lastDonation) + '</div>';
+    var isOnline = onlineDonors.some(function(o){ return o.phone === phone; });
+    html += isOnline
+      ? '<div class="note green">✓ আপনি অনলাইন তালিকায় আছেন — সব ফোনে দেখা যাচ্ছে।</div>'
+      : '<div class="note">⚠ অনলাইন তালিকায় এখনো যায়নি — রিফ্রেশ করে আবার চেষ্টা করুন।</div>';
+  } else {
+    html += '<div class="note">আপনি এখনো ডোনার হিসেবে নিবন্ধন করেননি।</div>';
+  }
+  $("myCard").innerHTML = html;
+  renderDrawerLogin();
+}
+function renderDrawerLogin(){
+  var el = $("drawer-login"); if (!el) return;
+  if (session) {
+    var acc = null;
+    for (var i = 0; i < myAccounts.length; i++) if (myAccounts[i].phone === session.phone) { acc = myAccounts[i]; break; }
+    var name = acc ? acc.name : session.phone;
+    el.innerHTML = '<p>স্বাগতম, ' + esc(name) + '</p><div class="row2"><button class="btn" onclick="closeDrawer();showTab(\'profile\')">প্রোফাইল</button><button class="btn ghost" onclick="logout()">লগআউট</button></div>';
+  } else {
+    el.innerHTML = '<p>এখনো লগইন করেননি?</p><div class="row2"><button class="btn" onclick="closeDrawer();showTab(\'profile\')">লগইন</button><button class="btn ghost" onclick="closeDrawer();showTab(\'register\')">নিবন্ধন</button></div>';
+  }
+}
+function goDrawer(name){ showTab(name); }
+function goDrawerNewRequest(){ openNewRequest(); }
+
+/* ================= init ================= */
+function fillSelect(id, items, first){
+  var s = $(id); var html = "";
+  if (first) html += '<option value="">' + first + '</option>';
+  items.forEach(function(x){ html += '<option value="' + esc(x) + '">' + esc(x) + '</option>'; });
+  s.innerHTML = html;
+}
+function init(){
+  var fg = $("fGroup");
+  fg.innerHTML = '<option value="সবগুলো">🩸 সকল রক্তের গ্রুপ</option>' + GROUPS.map(function(g){ return '<option value="' + g + '">' + g + '</option>'; }).join("");
+  var rqf = $("rqfGroup");
+  rqf.innerHTML = '<option value="সবগুলো">🩸 সকল রক্তের গ্রুপ</option>' + GROUPS.map(function(g){ return '<option value="' + g + '">' + g + '</option>'; }).join("");
+  fillSelect("fDistrict", DISTRICTS, "সব জেলা");
+  fillSelect("hDistrict", DISTRICTS, "সব জেলা");
+  fillSelect("rgGroup", GROUPS, "রক্তের গ্রুপ বেছে নিন");
+  fillSelect("rgDistrict", DISTRICTS, "জেলা বেছে নিন");
+  fillSelect("rqGroup", GROUPS, "রক্তের গ্রুপ");
+  fillSelect("rqDistrict", DISTRICTS, "জেলা বেছে নিন");
+  fillSelect("rqfDistrict", DISTRICTS, "সব জেলা");
+  fillThanaDropdown("fThana", "");
+  fillThanaDropdown("rqfThana", "");
+  fillHospitals();
+  renderDonors(); renderRequests(); renderHomeRequests(); renderHospitals(); renderProfile(); renderMessages();
+  heroShow(0); heroStart();
+  syncDonors(); syncRequests();
+  showTab("home");
+}
+document.addEventListener("DOMContentLoaded", init);
+</script>
+<footer style="height:100px">W8BDCR Blood Box • ভার্সন ৩.০ • অনলাইন ডোনার তালিকা — Firebase</footer>
+</body>
+</html>
